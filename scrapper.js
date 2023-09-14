@@ -10,7 +10,7 @@ const runScrapper = async (link) => {
             const fileName = `size_${moment().format('HHmmssSS')}.json`
             const filePathName = path + fileName
             fs.writeFileSync(`${fileName}`, jsonString)
-            const cmd = `python /size_scrapper/update_size.py ${fileName}`
+            const cmd = `python ../size_scrapper/update_size.py ${fileName}`
             exec(cmd, function (error, stdout, stderr) {
                 if (error) {
                     reject(error)
