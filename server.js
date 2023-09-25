@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+require('dotenv').config();
+
 const cors = require('cors')
 const {sizeScrapper, orderScrapper} = require('./scrapper')
 // const corsOptions = {

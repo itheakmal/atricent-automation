@@ -26,16 +26,18 @@ const runScrapper = async (link) => {
 
     })
 }
-const runOrderScrapper = async (address, scrapper) => {
+const runOrderScrapper = async (address, scrapper, filedName) => {
     return new Promise((resolve, reject) => {
         try {
             const exec = require('child_process').exec;
             const fs = require('fs');
-        const moment = require('moment')
+            // const moment = require('moment')
 
             const jsonString = JSON.stringify(address, null, 2);
             const path = __dirname;
-            const fileName = `order${moment().format('HHmmssSS')}.json`;
+            // const momentFileName = moment().format('HHmmssSS')
+            const fileName = `order${filedName}.json`;
+            // const returnFileName = `_order${momentFileName}.json`;
             console.log('filename', fileName)
             const filePathName = path + fileName;
             fs.writeFileSync(`${fileName}`, jsonString);
@@ -112,11 +114,26 @@ exports.sizeScrapper = (link) => {
 exports.orderScrapper = (data, file) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { stdout, stderr } = await runOrderScrapper(data, file)
+            const momentFileName = moment().format('HHmmssSS')
+
+
+
+            console.log('Before calling async function');
+            const asyncTask = runOrderScrapper(data, file, momentFileName)
+            console.log('After calling async function');
+            asyncTask.then(() => {
+                console.log('Async task has completed');
+            }).catch((error) => {
+                console.error('Async task encountered an error:', error);
+            });
             
-            const order = await readOrderFile(stdout)
-            console.log('order', JSON.stringify(order))
-            resolve(order)
+            
+            // const { stdout, stderr } = await runOrderScrapper(data, file. momentFileName)
+            console.log('momentFileName', momentFileName);
+            
+            // const order = await readOrderFile(stdout)
+            // console.log('order', JSON.stringify(order))
+            resolve(momentFileName)
         } catch (error) {
             reject(error)
         }
