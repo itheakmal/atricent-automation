@@ -103,7 +103,6 @@ const readOrderFile = async (file) => {
 exports.sizeScrapper = (link) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const moment = require('moment')
             const { stdout, stderr } = await runScrapper(link)
             const size = await readFile(stdout)
             resolve(size)
@@ -115,8 +114,8 @@ exports.sizeScrapper = (link) => {
 exports.orderScrapper = (data, file) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const moment = require('moment')
             const momentFileName = moment().format('HHmmssSS')
-
 
 
             console.log('Before calling async function');
