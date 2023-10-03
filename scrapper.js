@@ -26,7 +26,7 @@ const runScrapper = async (link) => {
 
     })
 }
-const runOrderScrapper = async (address, scrapper, filedName) => {
+exports.runOrderScrapper = async (address, scrapper, filedName) => {
     return new Promise((resolve, reject) => {
         try {
             const exec = require('child_process').exec;
@@ -74,7 +74,7 @@ const readFile = async (file) => {
         throw error
     }
 }
-const readOrderFile = async (file) => {
+exports.readOrderFile = async (file) => {
     const fs = require('fs').promises;
     // const filed = file.replace(/\r\n/g, '');
     const filed = file.trim().split(',');
@@ -111,21 +111,33 @@ exports.sizeScrapper = (link) => {
         }
     })
 }
-exports.orderScrapper = (data, file) => {
+exports.orderScrapper = (data, file, socket) => {
     return new Promise(async (resolve, reject) => {
         try {
             const moment = require('moment')
             const momentFileName = moment().format('HHmmssSS')
+            appIO.socket.on('orderScrapper', function (data) {
+                const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
+                asyncTask.then((data) => {
+                    console.log('Async task has completed', data);
+                    console.log('Async task has completed', data.stdout);
+                    console.log('Async task has completed', data.stdout.trim());
 
-
-            console.log('Before calling async function');
-            const asyncTask = runOrderScrapper(data, file, momentFileName)
-            console.log('After calling async function');
-            asyncTask.then(() => {
-                console.log('Async task has completed');
-            }).catch((error) => {
-                console.error('Async task encountered an error:', error);
+                }).catch((error) => {
+                    console.error('Async task encountered an error:', error);
+                });
+                // console.log('message from atricent-automation console:', data);
+                // console.log('appIO.socket.id:', appIO.socket.id);
             });
+
+            // console.log('Before calling async function');
+            // const asyncTask = runOrderScrapper(data, file, momentFileName)
+            // console.log('After calling async function');
+            // asyncTask.then((data) => {
+            //     console.log('Async task has completed', data);
+            // }).catch((error) => {
+            //     console.error('Async task encountered an error:', error);
+            // });
             
             
             // const { stdout, stderr } = await runOrderScrapper(data, file. momentFileName)
