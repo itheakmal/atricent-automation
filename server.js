@@ -93,21 +93,8 @@ const moment = require('moment')
 
 console.log('appIO.socket:', appIO.socket);
 io.on('connection', socket => {
-
    console.log('connected:', socket.client.id);
    appIO.socket = socket;
-   // socket.on('orderScrapper', async function (data) {
-   //    console.log('message from atricent-automation console:', data);
-   //    const result = await orderScrapper(data.cartItem, data.scrapper, appIO)
-   //    console.log('result:', result);
-   // });
-   // setInterval(function () {
-   //     socket.emit('clientEvent', Math.random());
-   //     console.log('message sent to the clients');
-   // }, 3000);
-
-   //   client.on('event', data => { /* … */ });
-   //   client.on('disconnect', () => { /* … */ });
    appIO.socket.on('orderScrapper', function (data) {
       const momentFileName = moment().format('HHmmssSS')
       const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
@@ -116,15 +103,18 @@ io.on('connection', socket => {
          console.log('Async task has completed', data.stdout);
          const order = await readOrderFile(data.stdout)
          appIO.socket.emit('orderScrapper', order);
-         // appIO.socket.emit('order')
-         // const order = await readOrderFile(stdout)
-            // console.log('order', JSON.stringify(order))
       }).catch((error) => {
          console.error('Async task encountered an error:', error);
       });
-      // console.log('message from atricent-automation console:', data);
-      // console.log('appIO.socket.id:', appIO.socket.id);
    });
+
+   // 
+   appIO.socket.on('sizeScrapper', async function (data) {
+     console.log('sizeScrapper data', data)
+     const result = await sizeScrapper(data.link.link)
+     appIO.socket.emit('sizeScrapper', result);
+   })
+
 });
 serveIO.listen(3030, function () {
    console.log('Socket strated at: 3030');
