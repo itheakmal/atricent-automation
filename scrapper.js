@@ -10,7 +10,7 @@ const runScrapper = async (link) => {
             const fileName = `size_${moment().format('HHmmssSS')}.json`
             const filePathName = path + fileName
             fs.writeFileSync(`${fileName}`, jsonString)
-            const cmd = `python3 /var/www/size_scrapper/update_size.py ${fileName}`
+            const cmd = `python3 /var/www/atricent-automation/scrappers/update_size.py ${fileName}`
             exec(cmd, function (error, stdout, stderr) {
                 if (error) {
                     reject(error)
@@ -42,7 +42,7 @@ exports.runOrderScrapper = async (address, scrapper, filedName) => {
             const filePathName = path + fileName;
             fs.writeFileSync(`${fileName}`, jsonString);
             // const cmd = `python3 /var/www/similar-products/banana_republic.py address=${address}`;
-            const cmd = `python3 /var/www/size_scrapper/${scrapper}.py ${fileName}`;
+            const cmd = `python3 /var/www/atricent-automation/scrappers/${scrapper}.py ${fileName}`;
 
             exec(cmd, function (error, stdout, stderr) {
                 if (error) {
