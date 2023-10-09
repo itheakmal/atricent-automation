@@ -118,9 +118,14 @@ io.on('connection', socket => {
          for (const varItem of cartItem.variations) {
             console.log('varItem', varItem)
             const result = await sizeScrapper(varItem.link)
-            console.log('result', result)
-            result.id = varItem.id
-            awaitedSizes.push(result)
+            if (result) {
+               console.log('result', result)
+               result.id = varItem.id
+               awaitedSizes.push(result)
+            } else {
+               console.log('in else result', result)
+               awaitedSizes.push({})
+            }
          }
          console.log('server.js awaitedSizes: ', awaitedSizes)
          appIO.socket.emit('sizeScrapper', awaitedSizes);
