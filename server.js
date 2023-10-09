@@ -112,7 +112,7 @@ io.on('connection', socket => {
    appIO.socket.on('sizeScrapper', async function (data) {
       console.log('sizeScrapper data', data)
 
-      for (const cartItem of data) {
+      for (const cartItem of data.carts) {
          const awaitedSizes = []
          console.log('cartItem.variations', cartItem.variations)
          for (const varItem of cartItem.variations) {
