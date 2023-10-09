@@ -98,7 +98,7 @@ io.on('connection', socket => {
    appIO.socket.on('orderScrapper', function (data) {
       const momentFileName = moment().format('HHmmssSS')
       const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
-      asyncTask.then(async(data) => {
+      asyncTask.then(async (data) => {
          console.log('Async task has completed', data);
          console.log('Async task has completed', data.stdout);
          const order = await readOrderFile(data.stdout)
@@ -110,10 +110,22 @@ io.on('connection', socket => {
 
    // 
    appIO.socket.on('sizeScrapper', async function (data) {
-     console.log('sizeScrapper data', data)
-     const result = await sizeScrapper(data.link.link)
-     console.log('server.js result: ', result)
-     appIO.socket.emit('sizeScrapper', result);
+      console.log('sizeScrapper data', data)
+
+      for (const cartItem of data) {
+         const awaitedSizes = []
+         console.log('cartItem.variations', cartItem.variations)
+         for (const varItem of cartItem.variations) {
+            console.log('varItem', varItem)
+            const result = await sizeScrapper(varItem.link)
+            console.log('result', result)
+            result.id = varItem.id
+            awaitedSizes.push(result)
+         }
+         console.log('server.js awaitedSizes: ', awaitedSizes)
+         appIO.socket.emit('sizeScrapper', awaitedSizes);
+      }
+
    })
 
 });
