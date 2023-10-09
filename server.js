@@ -112,10 +112,30 @@ io.on('connection', socket => {
    appIO.socket.on('sizeScrapper', async function (data) {
       console.log('sizeScrapper data', data)
 
-      for (const cartItem of data.carts) {
+      // if its 15th delete it
+      // for (const cartItem of data.carts) {
+      //    const awaitedSizes = []
+      //    console.log('cartItem.variations', cartItem.variations)
+      //    for (const varItem of cartItem.variations) {
+      //       console.log('varItem', varItem)
+      //       const result = await sizeScrapper(varItem.link)
+      //       if (result) {
+      //          console.log('result', result)
+      //          result.id = varItem.id
+      //          awaitedSizes.push(result)
+      //       } else {
+      //          console.log('in else result', result)
+      //          awaitedSizes.push({})
+      //       }
+      //    }
+      //    console.log('server.js awaitedSizes: ', awaitedSizes)
+      //    appIO.socket.emit('sizeScrapper', awaitedSizes);
+      // }
+
+      data.carts.forEach(async cartItem => {
          const awaitedSizes = []
          console.log('cartItem.variations', cartItem.variations)
-         for (const varItem of cartItem.variations) {
+         cartItem.variations.forEach(async varItem => {
             console.log('varItem', varItem)
             const result = await sizeScrapper(varItem.link)
             if (result) {
@@ -126,10 +146,11 @@ io.on('connection', socket => {
                console.log('in else result', result)
                awaitedSizes.push({})
             }
-         }
+         })
+         
          console.log('server.js awaitedSizes: ', awaitedSizes)
          appIO.socket.emit('sizeScrapper', awaitedSizes);
-      }
+      });
 
    })
 
