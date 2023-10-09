@@ -112,6 +112,7 @@ io.on('connection', socket => {
    appIO.socket.on('sizeScrapper', async function (data) {
      console.log('sizeScrapper data', data)
      const result = await sizeScrapper(data.link.link)
+     console.log('server.js result: ', result)
      appIO.socket.emit('sizeScrapper', result);
    })
 
