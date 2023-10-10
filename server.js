@@ -142,10 +142,13 @@ io.on('connection', socket => {
                result.id = varItem.id
                console.log('result', result)
                // awaitedSizes.push(result)
-               appIO.socket.emit('sizeScrapper', result);
+               appIO.socket.emit('sizeScrapper', result[0]);
             } else {
                console.log('in else result', result)
-               awaitedSizes.push({})
+               const temp = {}
+               temp.response = result
+               temp.id = varItem.id
+               appIO.socket.emit('sizeScrapper', temp);
             }
          })
          
