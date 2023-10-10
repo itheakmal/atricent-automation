@@ -133,23 +133,24 @@ io.on('connection', socket => {
       // }
 
       data.carts.forEach(async cartItem => {
-         const awaitedSizes = []
+         // const awaitedSizes = []
          console.log('cartItem.variations', cartItem.variations)
          cartItem.variations.forEach(async varItem => {
             console.log('varItem', varItem)
             const result = await sizeScrapper(varItem.link.link)
             if (result) {
-               console.log('result', result)
                result.id = varItem.id
-               awaitedSizes.push(result)
+               console.log('result', result)
+               // awaitedSizes.push(result)
+               appIO.socket.emit('sizeScrapper', result);
             } else {
                console.log('in else result', result)
                awaitedSizes.push({})
             }
          })
          
-         console.log('server.js awaitedSizes: ', awaitedSizes)
-         appIO.socket.emit('sizeScrapper', awaitedSizes);
+         // console.log('server.js awaitedSizes: ', awaitedSizes)
+         // appIO.socket.emit('sizeScrapper', awaitedSizes);
       });
 
    })
