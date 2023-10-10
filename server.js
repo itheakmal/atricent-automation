@@ -137,7 +137,7 @@ io.on('connection', socket => {
          console.log('cartItem.variations', cartItem.variations)
          cartItem.variations.forEach(async varItem => {
             console.log('varItem', varItem)
-            const result = await sizeScrapper(varItem.link)
+            const result = await sizeScrapper(varItem.link.link)
             if (result) {
                console.log('result', result)
                result.id = varItem.id
