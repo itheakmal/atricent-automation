@@ -139,7 +139,14 @@ io.on('connection', socket => {
             console.log('varItem', varItem)
             const result = await sizeScrapper(varItem.link.link)
             if (result) {
-               result.id = varItem.id
+
+               result.forEach(item => {
+
+                  item.item = varItem
+                  item.id = varItem.id
+
+               })
+               // result.id = varItem.id
                console.log('result', result)
                // awaitedSizes.push(result)
                appIO.socket.emit('sizeScrapper', result);
@@ -151,7 +158,7 @@ io.on('connection', socket => {
                appIO.socket.emit('sizeScrapper', temp);
             }
          })
-         
+
          // console.log('server.js awaitedSizes: ', awaitedSizes)
          // appIO.socket.emit('sizeScrapper', awaitedSizes);
       });
