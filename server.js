@@ -151,40 +151,40 @@ io.on('connection', socket => {
                appIO.socket.emit('sizeScrapper', [temp]);
             }
          }
-         console.log('server.js awaitedSizes: ', awaitedSizes)
-         appIO.socket.emit('sizeScrapper', awaitedSizes);
-      }
-
-      data.carts.forEach(async cartItem => {
-         // const awaitedSizes = []
-         console.log('cartItem.variations', cartItem.variations)
-         cartItem.variations.forEach(async varItem => {
-            console.log('varItem', varItem)
-            const result = await sizeScrapper(varItem.link.link)
-            if (result) {
-
-               result.forEach(item => {
-
-                  item.item = varItem
-                  item.id = varItem.id
-
-               })
-               // result.id = varItem.id
-               console.log('result', result)
-               // awaitedSizes.push(result)
-               appIO.socket.emit('sizeScrapper', result);
-            } else {
-               console.log('in else result', result)
-               const temp = {}
-               temp.response = result
-               temp.id = varItem.id
-               appIO.socket.emit('sizeScrapper', [temp]);
-            }
-         })
-
          // console.log('server.js awaitedSizes: ', awaitedSizes)
          // appIO.socket.emit('sizeScrapper', awaitedSizes);
-      });
+      }
+
+      // data.carts.forEach(async cartItem => {
+      //    // const awaitedSizes = []
+      //    console.log('cartItem.variations', cartItem.variations)
+      //    cartItem.variations.forEach(async varItem => {
+      //       console.log('varItem', varItem)
+      //       const result = await sizeScrapper(varItem.link.link)
+      //       if (result) {
+
+      //          result.forEach(item => {
+
+      //             item.item = varItem
+      //             item.id = varItem.id
+
+      //          })
+      //          // result.id = varItem.id
+      //          console.log('result', result)
+      //          // awaitedSizes.push(result)
+      //          appIO.socket.emit('sizeScrapper', result);
+      //       } else {
+      //          console.log('in else result', result)
+      //          const temp = {}
+      //          temp.response = result
+      //          temp.id = varItem.id
+      //          appIO.socket.emit('sizeScrapper', [temp]);
+      //       }
+      //    })
+
+      //    // console.log('server.js awaitedSizes: ', awaitedSizes)
+      //    // appIO.socket.emit('sizeScrapper', awaitedSizes);
+      // });
 
    })
 
