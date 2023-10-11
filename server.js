@@ -208,7 +208,14 @@ io.on('connection', socket => {
 
 
       console.log('cartSizes before emiting event-->', cartSizes)
-      appIO.socket.emit('sizeScrapperApp', cartSizes);
+      
+      for (let cartItem of cartSizes) {
+         appResult[cartItem.id] = cartItem.error
+      }
+      console.log('appResult before emiting event-->', appResult)
+
+
+      appIO.socket.emit('sizeScrapperApp', appResult);
       // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
       cartSizes = [];
 
