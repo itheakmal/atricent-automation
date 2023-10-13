@@ -121,17 +121,68 @@ io.on('connection', socket => {
                   item.item = varItem
                   item.id = varItem.id
                }
-               console.log('...result', ...result)
-               cartSizes.push(...result)
-               /* [
-  {
-   type: null,
-   length: null,
-   size_elements: null,
-   item: { size: [Array], id: 29107, quantity: '1', link: [Object] },
-   id: 29107
- }
-]*/
+
+               console.log('result', result)
+               const parsedSize = result
+               if (parsedSize.length) {
+                  const firstTemp = []
+                  // const temp = parsedSize.map(ps => {
+                  //    const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+                  //    return { ...ps, size_elements: sample }
+                  // })
+
+                  // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
+                  // await deleteGeneratedFile(stdout)
+
+                  const firstMatch = parsedSize.filter(size => {
+
+                     const tempType = size.type !== null ? size.type.toLowerCase() : size.type
+                     const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
+
+                     const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
+                     const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
+
+                     return tempType === givenType && tempLength === givenLength
+                  })
+
+                  if (firstMatch.length) {
+                     for (let item of firstMatch) {
+                        if (item.size_elements !== null) {
+
+                           console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
+                           const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
+                           console.log('ele', ele)
+                           if (ele === -1) {
+                              const sizesReturned = {
+                                 id: item.item.id,
+                                 error: 'Size not available, wanna checkout other sizes'
+                              }
+                              cartSizes.push(sizesReturned)
+                           }
+                        } else {
+                           const sizesReturned = {
+                              id: item.item.id,
+                              error: 'All sizes are out of stock'
+                           }
+                           cartSizes.push(sizesReturned)
+                        }
+                     }
+                  } else {
+                     let id = 0
+                     for (let temp of parsedSize) {
+                        id = temp.id
+                        break
+                     }
+                     const sizesReturned = {
+                        id: id,
+                        error: 'No size available'
+                     }
+                     cartSizes.push(sizesReturned)
+                  }
+
+               } else {
+                  console.log('no data returned from the scrapper')
+               }
                // appIO.socket.emit('sizeScrapper', result);
             } else {
                console.log('in else result', result)
@@ -143,17 +194,28 @@ io.on('connection', socket => {
          }
       }
 
+
+      // ---------------------------------- jugad
+
+
+
+
+
+
+      // }
+
+
       console.log('cartSizes before emiting event-->', cartSizes)
-      
+
       // for (let cartItem of cartSizes) {
       //    appResult[cartItem.id] = cartItem.error
       // }
       // console.log('appResult before emiting event-->', appResult)
 
 
-      appIO.socket.emit('sizeScrapper', cartSizes);
+      appIO.socket.emit('sizeScrapperApp', cartSizes);
       // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
-      // cartSizes = [];
+      cartSizes = [];
 
 
 
