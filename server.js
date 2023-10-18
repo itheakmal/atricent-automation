@@ -108,7 +108,7 @@ io.on('connection', socket => {
 
 });
 // 
-appIO.socket.on('orderScrapper', function (data) {
+appIO.socket.on('orderScrapper', async function (data) {
    const momentFileName = moment().format('HHmmssSS')
    const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
    asyncTask.then(async (data) => {
