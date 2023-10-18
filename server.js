@@ -116,6 +116,7 @@ io.on('connection', socket => {
          const newData = data.stdout.trim()
          console.log('Trimed output', newData);
          const order = await readOrderFile(newData)
+         console.log('before emitting order =>', order)
          appIO.socket.emit('orderScrapper', order);
       }).catch((error) => {
          console.error('1Async task encountered an error:', error);
