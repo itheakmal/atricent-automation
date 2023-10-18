@@ -103,7 +103,9 @@ io.on('connection', socket => {
    console.log('connected:', socket.client.id);
    appIO.socket = socket;
 
-
+   appIO.socket.on('testOne', (data)=>{
+      console.log('testOne:', data)
+   })
 
 
    // 
