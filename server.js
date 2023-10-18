@@ -38,7 +38,14 @@ const appIO = { socket: null };
 //    // (note that there is no callback argument to the `.disconnect` method)
 //  });
 // 
-app.get('/', function (req, res) {
+app.get('/', async function (req, res) {
+   try {
+      const data = await fs.readFile(`./order_20231018_091045.json`, 'utf-8')
+      console.log(data, 'data')
+      return JSON.parse(data)
+  } catch (error) {
+      throw error
+  }
    res.send('Hello World');
 })
 app.post('/size-scrapper', async (req, res) => {
@@ -95,9 +102,9 @@ console.log('appIO.socket:', appIO.socket);
 io.on('connection', socket => {
    console.log('connected:', socket.client.id);
    appIO.socket = socket;
-   
 
-   
+
+
 
 });
 // 
@@ -105,12 +112,14 @@ appIO.socket.on('orderScrapper', function (data) {
    const momentFileName = moment().format('HHmmssSS')
    const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
    asyncTask.then(async (data) => {
-      console.log('Async task has completed', data);
-      console.log('Async task has completed', data.stdout);
-      const order = await readOrderFile(data.stdout)
+      console.log('1Async task has completed', data);
+      console.log('1Async task has completed', data.stdout);
+      const newData = data.stdout.trim()
+      console.log('Trimed output', newData);
+      const order = await readOrderFile(newData)
       appIO.socket.emit('orderScrapper', order);
    }).catch((error) => {
-      console.error('Async task encountered an error:', error);
+      console.error('1Async task encountered an error:', error);
    });
 });
 // 
@@ -120,81 +129,90 @@ appIO.socket.on('sizeScrapper', async function (data) {
    let appResult = {}
    for await (const cartItem of data.carts) {
       for (const varItem of cartItem.variations) {
-         const result = await sizeScrapper(varItem.link.link)
-         if (result) {
-            for (let item of result) {
-               item.item = varItem
-               item.id = varItem.id
-            }
+         if (varItem?.link?.link) {
 
-            console.log('result', result)
-            const parsedSize = result
-            if (parsedSize.length) {
-               const firstTemp = []
-               // const temp = parsedSize.map(ps => {
-               //    const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
-               //    return { ...ps, size_elements: sample }
-               // })
+            const result = await sizeScrapper(varItem.link.link)
+            if (result) {
+               for (let item of result) {
+                  item.item = varItem
+                  item.id = varItem.id
+               }
 
-               // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
-               // await deleteGeneratedFile(stdout)
+               console.log('result', result)
+               const parsedSize = result
+               if (parsedSize.length) {
+                  const firstTemp = []
+                  // const temp = parsedSize.map(ps => {
+                  //    const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+                  //    return { ...ps, size_elements: sample }
+                  // })
 
-               const firstMatch = parsedSize.filter(size => {
+                  // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
+                  // await deleteGeneratedFile(stdout)
 
-                  const tempType = size.type !== null ? size.type.toLowerCase() : size.type
-                  const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
+                  const firstMatch = parsedSize.filter(size => {
 
-                  const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
-                  const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
+                     const tempType = size.type !== null ? size.type.toLowerCase() : size.type
+                     const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
 
-                  return tempType === givenType && tempLength === givenLength
-               })
+                     const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
+                     const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
 
-               if (firstMatch.length) {
-                  for (let item of firstMatch) {
-                     if (item.size_elements !== null) {
+                     return tempType === givenType && tempLength === givenLength
+                  })
 
-                        console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
-                        const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
-                        console.log('ele', ele)
-                        if (ele === -1) {
+                  if (firstMatch.length) {
+                     for (let item of firstMatch) {
+                        if (item.size_elements !== null) {
+
+                           console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
+                           const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
+                           console.log('ele', ele)
+                           if (ele === -1) {
+                              const sizesReturned = {
+                                 id: item.item.id,
+                                 error: 'Size not available, wanna checkout other sizes'
+                              }
+                              cartSizes.push(sizesReturned)
+                           }
+                        } else {
                            const sizesReturned = {
                               id: item.item.id,
-                              error: 'Size not available, wanna checkout other sizes'
+                              error: 'All sizes are out of stock'
                            }
                            cartSizes.push(sizesReturned)
                         }
-                     } else {
-                        const sizesReturned = {
-                           id: item.item.id,
-                           error: 'All sizes are out of stock'
-                        }
-                        cartSizes.push(sizesReturned)
                      }
+                  } else {
+                     let id = 0
+                     for (let temp of parsedSize) {
+                        id = temp.id
+                        break
+                     }
+                     const sizesReturned = {
+                        id: id,
+                        error: 'No size available'
+                     }
+                     cartSizes.push(sizesReturned)
                   }
-               } else {
-                  let id = 0
-                  for (let temp of parsedSize) {
-                     id = temp.id
-                     break
-                  }
-                  const sizesReturned = {
-                     id: id,
-                     error: 'No size available'
-                  }
-                  cartSizes.push(sizesReturned)
-               }
 
+               } else {
+                  console.log('no data returned from the scrapper')
+               }
+               // appIO.socket.emit('sizeScrapper', result);
             } else {
-               console.log('no data returned from the scrapper')
+               console.log('in else result', result)
+               const temp = {}
+               temp.response = result
+               temp.id = varItem.id
+               // appIO.socket.emit('sizeScrapper', [temp]);
             }
-            // appIO.socket.emit('sizeScrapper', result);
          } else {
             console.log('in else result', result)
             const temp = {}
-            temp.response = result
+            temp.response = "Variation does not have link"
             temp.id = varItem.id
-            // appIO.socket.emit('sizeScrapper', [temp]);
+            cartSizes.push(temp)
          }
       }
    }
