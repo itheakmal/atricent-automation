@@ -38,16 +38,6 @@ const appIO = { socket: null };
 //    // (note that there is no callback argument to the `.disconnect` method)
 //  });
 // 
-app.get('/', async function (req, res) {
-   try {
-      const data = await fs.readFile(`./order_20231018_091045.json`, 'utf-8')
-      console.log(data, 'data')
-      return JSON.parse(data)
-  } catch (error) {
-      throw error
-  }
-   res.send('Hello World');
-})
 app.post('/size-scrapper', async (req, res) => {
    const data = req.body
    console.log('data', data)
@@ -79,51 +69,49 @@ var server = app.listen(8988, function () {
    console.log("atricent scrapper listening at http://%s:%s", host, port)
 })
 
-// console.log(require('socket.io'))
-
-// var io = require('socket.io').listen(3000);
-// io.on('connection', function (socket) {
-//     console.log('connected:', socket.client.id);
-//     socket.on('serverEvent', function (data) {
-//         console.log('new message from client:', data);
-//     });
-//     setInterval(function () {
-//         socket.emit('clientEvent', Math.random());
-//         console.log('message sent to the clients');
-//     }, 3000);
-// });
-
 
 const serveIO = require('http').createServer();
 const io = require('socket.io')(serveIO);
 const moment = require('moment')
 
+app.get('/', async function (req, res) {
+	const fs = require('fs')
+   try {
+      
+	  const order = await readOrderFile('order_20231018_202549.json', io)
+		console.log('Before emitting order =>', order)
+	  
+      return JSON.parse(order)
+  } catch (error) {
+      throw error
+  }
+   res.send('Hello World');
+})
+
 console.log('appIO.socket:', appIO.socket);
 io.on('connection', socket => {
    console.log('connected:', socket.client.id);
    appIO.socket = socket;
-
-   // appIO.socket.on('testOne', (data)=>{
-   //    console.log('testOne:', data)
-   // })
-   appIO.socket.emit('testOne', "message testOne");
-
-
    // 
    appIO.socket.on('orderScrapper', async function (data) {
       const momentFileName = moment().format('HHmmssSS')
       const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
-      asyncTask.then(async (data) => {
-         console.log('1Async task has completed', data);
-         console.log('1Async task has completed', data.stdout);
+      try {
+         const data = await asyncTask;
+         console.log('Async task has completed', data);
+         console.log('Async task has completed', data.stdout);
          const newData = data.stdout.trim()
-         console.log('Trimed output', newData);
-         const order = await readOrderFile(newData)
-         console.log('before emitting order =>', order)
-         appIO.socket.emit('orderScrapper', order);
-      }).catch((error) => {
-         console.error('1Async task encountered an error:', error);
-      });
+         console.log('Trimmed output', newData);
+         const order = await readOrderFile(newData, io)
+         console.log('Before emitting order =>', order)
+         tempOrder = order
+         appIO.socket.emit('orderScrapper', tempOrder);
+
+      } catch (error) {
+         appIO.socket.emit('testOne', "error");
+         appIO.socket.emit('orderScrapper', "error orderscrapper");
+         console.error('Async task encountered an error:', error);
+      }
    });
    // 
    appIO.socket.on('sizeScrapper', async function (data) {
@@ -133,14 +121,14 @@ io.on('connection', socket => {
       for await (const cartItem of data.carts) {
          for (const varItem of cartItem.variations) {
             if (varItem?.link?.link) {
-   
+
                const result = await sizeScrapper(varItem.link.link)
                if (result) {
                   for (let item of result) {
                      item.item = varItem
                      item.id = varItem.id
                   }
-   
+
                   console.log('result', result)
                   const parsedSize = result
                   if (parsedSize.length) {
@@ -149,25 +137,25 @@ io.on('connection', socket => {
                      //    const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
                      //    return { ...ps, size_elements: sample }
                      // })
-   
+
                      // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
                      // await deleteGeneratedFile(stdout)
-   
+
                      const firstMatch = parsedSize.filter(size => {
-   
+
                         const tempType = size.type !== null ? size.type.toLowerCase() : size.type
                         const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
-   
+
                         const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
                         const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
-   
+
                         return tempType === givenType && tempLength === givenLength
                      })
-   
+
                      if (firstMatch.length) {
                         for (let item of firstMatch) {
                            if (item.size_elements !== null) {
-   
+
                               console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
                               const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
                               console.log('ele', ele)
@@ -198,7 +186,7 @@ io.on('connection', socket => {
                         }
                         cartSizes.push(sizesReturned)
                      }
-   
+
                   } else {
                      console.log('no data returned from the scrapper')
                   }
@@ -219,35 +207,35 @@ io.on('connection', socket => {
             }
          }
       }
-   
-   
+
+
       // ---------------------------------- jugad
-   
-   
-   
-   
-   
-   
+
+
+
+
+
+
       // }
-   
-   
+
+
       console.log('cartSizes before emiting event-->', cartSizes)
-   
+
       // for (let cartItem of cartSizes) {
       //    appResult[cartItem.id] = cartItem.error
       // }
       // console.log('appResult before emiting event-->', appResult)
-   
-   
+
+
       appIO.socket.emit('sizeScrapperApp', cartSizes);
       // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
       cartSizes = [];
-   
-   
-   
-   
-   
-   
+
+
+
+
+
+
    })
 });
 serveIO.listen(3030, function () {

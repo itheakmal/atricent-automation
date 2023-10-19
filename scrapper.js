@@ -93,6 +93,7 @@ exports.readOrderFile = async (file) => {
 
             }
         }
+        io.emit("testOne", data);
         // console.log('User service data', data);
         return data;
     } catch (err) {
@@ -138,11 +139,11 @@ exports.orderScrapper = (data, file, socket) => {
             // }).catch((error) => {
             //     console.error('Async task encountered an error:', error);
             // });
-            
-            
+
+
             // const { stdout, stderr } = await runOrderScrapper(data, file. momentFileName)
             console.log('momentFileName', momentFileName);
-            
+
             // const order = await readOrderFile(stdout)
             // console.log('order', JSON.stringify(order))
             resolve(momentFileName)
