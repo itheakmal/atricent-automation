@@ -74,7 +74,7 @@ const readFile = async (file) => {
         throw error
     }
 }
-exports.readOrderFile = async (file) => {
+exports.readOrderFile = async (file, io) => {
     const fs = require('fs').promises;
     // const filed = file.replace(/\r\n/g, '');
     const filed = file.trim().split(',');
