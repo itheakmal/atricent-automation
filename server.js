@@ -118,11 +118,14 @@ io.on('connection', socket => {
       // console.log('sizeScrapper data', data)
       let cartSizes = [];
       let appResult = []
+      let index = 0;
       for await (const cartItem of data.carts) {
+         let count = 0;
          for (const varItem of cartItem.variations) {
+            let num = 0;
             if (varItem?.link?.link) {
 
-               const result = await sizeScrapper(varItem.link.link, io, varItem.id)
+               const result = await sizeScrapper(varItem.link.link, io, varItem.id, num, count, index)
                if (result) {
                   for (let item of result) {
                      item.item = varItem
@@ -142,7 +145,8 @@ io.on('connection', socket => {
                      })
                      console.log('tempID before emitting ==>', tempID)
                      console.log('temp before emitting ==>', temp)
-                     appResult.push({id:tempID, data: temp})
+                     // appResult.push({id:tempID, data: temp})
+
                      // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
                      // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
                      // await deleteGeneratedFile(stdout)
@@ -211,7 +215,9 @@ io.on('connection', socket => {
                temp.id = varItem.id
                cartSizes.push(temp)
             }
+            num++
          }
+         count++
       }
 
 
@@ -230,13 +236,13 @@ io.on('connection', socket => {
       // for (let cartItem of cartSizes) {
       //    appResult[cartItem.id] = cartItem.error
       // }
-      console.log('appResult before emiting event-->', appResult)
+      // console.log('appResult before emiting event-->', appResult)
 
-      appIO.socket.emit('sizeUpdate', appResult)
+      // appIO.socket.emit('sizeUpdate', appResult)
       appIO.socket.emit('sizeScrapperApp', cartSizes);
       // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
       cartSizes = [];
-      appResult = [];
+      // appResult = [];
 
 
 

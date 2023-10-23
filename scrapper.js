@@ -63,20 +63,21 @@ exports.runOrderScrapper = async (address, scrapper, filedName) => {
     })
 }
 
-const readFile = async (file, io, id) => {
+const readFile = async (file, io, id, num, count, index) => {
     const fs = require('fs').promises
     const filed = file.trim()
     console.log('file', filed)
     try {
         const data = await fs.readFile(`./${filed}`, 'utf-8')
-        // const parsedData = JSON.parse(data)
-        // console.log('readFile data: ', parsedData)
-        // const temp = parsedData.map(ps => {
+        const parsedData = JSON.parse(data)
+        console.log('readFile data: ', parsedData)
+        const temp = parsedData.map(ps => {
             
-        //     const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
-        //     return { ...ps, size_elements: sample }
-        //  })
-        // io.emit('sizeUpdate', {data: temp, id: id})
+            const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+            return { ...ps, size_elements: sample }
+         })
+         console.log('num, count, index', num, count, index)
+        io.emit('sizeUpdate', {data: temp, id: id})
         return JSON.parse(data)
     } catch (error) {
         throw error
