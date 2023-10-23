@@ -78,7 +78,7 @@ const readFile = async (file, io, id, num, count, index) => {
          })
          console.log('num, count, index', num, count, index)
         io.emit('sizeUpdate', {data: temp, id: id})
-        return JSON.parse(data)
+        return parsedData
     } catch (error) {
         throw error
     }
@@ -110,11 +110,11 @@ exports.readOrderFile = async (file, io) => {
     }
 }
 
-exports.sizeScrapper = (link, io, id) => {
+exports.sizeScrapper = (link, io, id, num, count, index) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { stdout, stderr } = await runScrapper(link)
-            const size = await readFile(stdout, io, id)
+            const size = await readFile(stdout, io, id, num, count, index)
 
             resolve(size)
         } catch (error) {
