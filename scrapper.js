@@ -103,11 +103,11 @@ exports.readOrderFile = async (file, io) => {
     }
 }
 
-exports.sizeScrapper = (link) => {
+exports.sizeScrapper = (link, io) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { stdout, stderr } = await runScrapper(link)
-            const size = await readFile(stdout)
+            const size = await readFile(stdout, io)
 
             resolve(size)
         } catch (error) {
