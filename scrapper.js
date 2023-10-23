@@ -63,14 +63,19 @@ exports.runOrderScrapper = async (address, scrapper, filedName) => {
     })
 }
 
-const readFile = async (file, io) => {
+const readFile = async (file, io, id) => {
     const fs = require('fs').promises
     const filed = file.trim()
     console.log('file', filed)
     try {
         const data = await fs.readFile(`./${filed}`, 'utf-8')
         console.log('readFile data: ', data)
-        io.emit('sizeUpdate', {data: temp, id: data[0].id})
+        const temp = data.map(ps => {
+            
+            const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+            return { ...ps, size_elements: sample }
+         })
+        io.emit('sizeUpdate', {data: temp, id: id})
         return JSON.parse(data)
     } catch (error) {
         throw error
@@ -103,11 +108,11 @@ exports.readOrderFile = async (file, io) => {
     }
 }
 
-exports.sizeScrapper = (link, io) => {
+exports.sizeScrapper = (link, io, id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { stdout, stderr } = await runScrapper(link)
-            const size = await readFile(stdout, io)
+            const size = await readFile(stdout, io, id)
 
             resolve(size)
         } catch (error) {

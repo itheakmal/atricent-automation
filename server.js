@@ -122,7 +122,7 @@ io.on('connection', socket => {
          for (const varItem of cartItem.variations) {
             if (varItem?.link?.link) {
 
-               const result = await sizeScrapper(varItem.link.link, io)
+               const result = await sizeScrapper(varItem.link.link, io, varItem.id)
                if (result) {
                   for (let item of result) {
                      item.item = varItem
