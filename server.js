@@ -132,7 +132,7 @@ io.on('connection', socket => {
                   console.log('result', result)
                   const parsedSize = result
                   if (parsedSize.length) {
-                     const tempID = null
+                     let tempID = null
                      const temp = parsedSize.map(ps => {
                         if (tempID !== ps.id) {
                            tempID = ps.id
