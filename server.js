@@ -117,7 +117,7 @@ io.on('connection', socket => {
    appIO.socket.on('sizeScrapper', async function (data) {
       // console.log('sizeScrapper data', data)
       let cartSizes = [];
-      let appResult = {}
+      let appResult = []
       for await (const cartItem of data.carts) {
          for (const varItem of cartItem.variations) {
             if (varItem?.link?.link) {
@@ -142,6 +142,7 @@ io.on('connection', socket => {
                      })
                      console.log('tempID before emitting ==>', tempID)
                      console.log('temp before emitting ==>', temp)
+                     appResult.push({id:tempID, data: temp})
                      // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
                      // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
                      // await deleteGeneratedFile(stdout)
@@ -231,10 +232,11 @@ io.on('connection', socket => {
       // }
       // console.log('appResult before emiting event-->', appResult)
 
-
+      appIO.socket.emit('sizeUpdate', appResult)
       appIO.socket.emit('sizeScrapperApp', cartSizes);
       // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
       cartSizes = [];
+      appResult = [];
 
 
 
