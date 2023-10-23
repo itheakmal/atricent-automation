@@ -122,7 +122,7 @@ io.on('connection', socket => {
          for (const varItem of cartItem.variations) {
             if (varItem?.link?.link) {
 
-               const result = await sizeScrapper(varItem.link.link)
+               const result = await sizeScrapper(varItem.link.link, io)
                if (result) {
                   for (let item of result) {
                      item.item = varItem
@@ -142,7 +142,7 @@ io.on('connection', socket => {
                      })
                      console.log('tempID before emitting ==>', tempID)
                      console.log('temp before emitting ==>', temp)
-                     appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
+                     // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
                      // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
                      // await deleteGeneratedFile(stdout)
 
