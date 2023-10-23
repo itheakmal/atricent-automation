@@ -230,7 +230,7 @@ io.on('connection', socket => {
       // for (let cartItem of cartSizes) {
       //    appResult[cartItem.id] = cartItem.error
       // }
-      // console.log('appResult before emiting event-->', appResult)
+      console.log('appResult before emiting event-->', appResult)
 
       appIO.socket.emit('sizeUpdate', appResult)
       appIO.socket.emit('sizeScrapperApp', cartSizes);
