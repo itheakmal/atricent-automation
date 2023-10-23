@@ -133,11 +133,12 @@ io.on('connection', socket => {
                   const parsedSize = result
                   if (parsedSize.length) {
                      const firstTemp = []
-                     // const temp = parsedSize.map(ps => {
-                     //    const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
-                     //    return { ...ps, size_elements: sample }
-                     // })
-
+                     const temp = parsedSize.map(ps => {
+                        const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+                        return { ...ps, size_elements: sample }
+                     })
+                     console.log('temp before emitting ==>', temp)
+                     appIO.socket.emit('sizeUpdate', {data: temp, id: returnedItem.id})
                      // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
                      // await deleteGeneratedFile(stdout)
 
