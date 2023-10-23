@@ -69,14 +69,15 @@ const readFile = async (file, io, id) => {
     console.log('file', filed)
     try {
         const data = await fs.readFile(`./${filed}`, 'utf-8')
-        console.log('readFile data: ', data)
-        const temp = data.map(ps => {
+        const parsedData = JSON.parse(data)
+        console.log('readFile data: ', parsedData)
+        const temp = parsedData.map(ps => {
             
             const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
             return { ...ps, size_elements: sample }
          })
         io.emit('sizeUpdate', {data: temp, id: id})
-        return JSON.parse(data)
+        return parsedData
     } catch (error) {
         throw error
     }
