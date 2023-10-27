@@ -90,6 +90,9 @@ exports.exportSQL = async (filePath, fileName) => {
         password: 'AVNS_o9klOLdLGD5avJq3GMt',
         database: 'live_atricent',
     });
+    if (connection) {
+        console.log('connected')
+    }
 
     // simple query
     connection.query(
