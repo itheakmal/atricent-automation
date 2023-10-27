@@ -12,8 +12,17 @@ const { cronJob } = require('./app/cronJob');
 // }
 // app.use(cors(corsOptions))
 app.use(express.json())
+
+
+const { exportSQL } = require("./exportSQL");
+const moment = require("moment")
+
 // 
-cronJob()
+// cronJob()
+const fileName = moment().format('DhhmmssS') + '.sql'
+const filePath = 'app/data/'
+console.log('fileName + filePath', filePath + fileName)
+await exportSQL(filePath, fileName)
 const appIO = { socket: null };
 
 // var socketIOClient = require('socket.io-client');
