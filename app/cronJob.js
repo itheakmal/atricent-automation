@@ -1,11 +1,12 @@
 const { exportSQL } = require("./exportSQL");
 
 exports.cronJob = () => {
-  const cron = require("node-cron");
+  const schedule = require('node-schedule');
+
   const moment = require("moment")
   // const { mergeChunks } = require("./uploadHandler");
-  
-  cron.schedule("0 * * * * *", async () => {
+  schedule.scheduleJob('0 * * * * *', async function () {
+  // cron.schedule("0 * * * * *", async () => {
     const fileName = moment().format('DhhmmssS')+'.sql'
     const filePath = 'app/data/'
     console.log('fileName + filePath', filePath + fileName)
