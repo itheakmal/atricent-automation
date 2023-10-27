@@ -29,7 +29,8 @@ exports.exportSQL = async (filePath, fileName) => {
             database: 'live_atricent',
         },
         dump: {
-            schema: { table: { dropIfExist: true } },
+            // schema: { table: { dropIfExist: true } },
+            schema: null,
             data: { maxRowsPerInsertStatement: 10, },
             tables: ['brands'],
             // tables: ['sizes'],
