@@ -93,8 +93,8 @@ var server = app.listen(8988, function () {
 const serveIO = require('http').createServer();
 const io = require('socket.io')(serveIO);
 const moment = require('moment');
-const { sizeDBImport } = require('./app/sizeDBImport');
-const { sizeMigration } = require('./app/sizeMigration');
+// const { sizeDBImport } = require('./app/sizeDBImport');
+// const { sizeMigration } = require('./app/sizeMigration');
 const { sql2gzip } = require('./app/sql2gzip');
 
 app.get('/', async function (req, res) {
