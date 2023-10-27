@@ -16,7 +16,7 @@ app.use(express.json())
 
 // const { exportSQL } = require("./exportSQL");
 // const moment = require("moment")
-
+const appIO = { socket: null };
 // 
 // cronJob()
 
@@ -295,7 +295,7 @@ const fileName = moment().format('DhhmmssS') + '.sql'
 const filePath = 'app/data/'
 console.log('fileName + filePath', filePath + fileName)
 exportSQL(filePath, fileName)
-const appIO = { socket: null };
+
 
 // ----------------------------------------------
 // Receiver
