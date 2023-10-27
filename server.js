@@ -14,16 +14,12 @@ const { cronJob } = require('./app/cronJob');
 app.use(express.json())
 
 
-const { exportSQL } = require("./exportSQL");
+// const { exportSQL } = require("./exportSQL");
 // const moment = require("moment")
 
 // 
 // cronJob()
-const fileName = moment().format('DhhmmssS') + '.sql'
-const filePath = 'app/data/'
-console.log('fileName + filePath', filePath + fileName)
-exportSQL(filePath, fileName)
-const appIO = { socket: null };
+
 
 // var socketIOClient = require('socket.io-client');
 // var sailsIOClient = require('sails.io.js');
@@ -107,6 +103,7 @@ const moment = require('moment');
 // const { sizeDBImport } = require('./app/sizeDBImport');
 // const { sizeMigration } = require('./app/sizeMigration');
 const { sql2gzip } = require('./app/sql2gzip');
+const { exportSQL } = require('./app/exportSQL');
 
 app.get('/', async function (req, res) {
    const fs = require('fs')
@@ -294,7 +291,11 @@ serveIO.listen(3030, function () {
 });
 
 
-
+const fileName = moment().format('DhhmmssS') + '.sql'
+const filePath = 'app/data/'
+console.log('fileName + filePath', filePath + fileName)
+exportSQL(filePath, fileName)
+const appIO = { socket: null };
 
 // ----------------------------------------------
 // Receiver
