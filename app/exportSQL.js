@@ -18,19 +18,20 @@ exports.exportSQL = async (filePath, fileName) => {
     // step 1,2,3
     // dump the result straight to a compressed file
     // const dumpDB = () => {
-
+// mysql -u doadmin -pAVNS_o9klOLdLGD5avJq3GMt -h dbaas-db-1815241-do-user-7338207-0.b.db.ondigitalocean.com -P 25060 atricent_scrappers
     console.log('file started')
     mysqldump({
         connection: {
-            host: 'localhost',
-            user: 'root',
-            password: '',
+            host: 'dbaas-db-1815241-do-user-7338207-0.b.db.ondigitalocean.com',
+            port: 25060,
+            user: 'doadmin',
+            password: 'AVNS_o9klOLdLGD5avJq3GMt',
             database: 'atricent_live',
         },
         dump: {
             schema: { table: { dropIfExist: true } },
             data: { maxRowsPerInsertStatement: 10, },
-            tables: ['sizes', 'brands'],
+            tables: ['sizes', 'variations'],
         },
         // dumpToFile: 'app/data/size_dump.sql.gz',
         // dumpToFile: 'app/data/size_dump.sql',
