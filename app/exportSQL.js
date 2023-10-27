@@ -41,7 +41,8 @@ exports.exportSQL = async (filePath, fileName) => {
         console.log('DB exported')
         // sql2gzip(filePath, fileName)
         // importSQL(filePath, fileName)
-        const parser = require('node-sql-parser');
+        const { Parser } = require('node-sql-parser');
+        const parser = new Parser()
         const fs = require('fs');
 
         // Read the SQL file
