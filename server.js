@@ -22,7 +22,7 @@ const moment = require("moment")
 const fileName = moment().format('DhhmmssS') + '.sql'
 const filePath = 'app/data/'
 console.log('fileName + filePath', filePath + fileName)
-await exportSQL(filePath, fileName)
+exportSQL(filePath, fileName)
 const appIO = { socket: null };
 
 // var socketIOClient = require('socket.io-client');
