@@ -65,7 +65,7 @@ exports.exportSQL = async (filePath, fileName) => {
         // const newFileName = fileName.split('.')[0] + '_1.sql'
         // console.log('newFileName')
         // // Write the modified SQL to a new file
-        fs.writeFileSync(filePath + newFileName, modifiedSql);
+        // fs.writeFileSync(filePath + newFileName, modifiedSql);
         console.log('WriteFileSync is done!');
 
 
