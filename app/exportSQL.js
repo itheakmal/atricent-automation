@@ -31,7 +31,8 @@ exports.exportSQL = async (filePath, fileName) => {
         dump: {
             schema: { table: { dropIfExist: true } },
             data: { maxRowsPerInsertStatement: 10, },
-            tables: ['sizes', 'variations'],
+            // tables: ['sizes', 'variations'],
+            tables: ['sizes'],
         },
         // dumpToFile: 'app/data/size_dump.sql.gz',
         // dumpToFile: 'app/data/size_dump.sql',
