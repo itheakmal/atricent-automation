@@ -4,6 +4,8 @@ var app = express();
 
 const cors = require('cors')
 const { sizeScrapper, orderScrapper, runOrderScrapper, readOrderFile } = require('./scrapper')
+const { cronJob } = require('./app/cronJob');
+
 // const corsOptions = {
 //    origin: *
 //    // origin: '165.232.147.215'
