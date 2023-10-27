@@ -26,7 +26,7 @@ exports.exportSQL = async (filePath, fileName) => {
             port: 25060,
             user: 'doadmin',
             password: 'AVNS_o9klOLdLGD5avJq3GMt',
-            database: 'atricent_live',
+            database: 'live_atricent',
         },
         dump: {
             schema: { table: { dropIfExist: true } },
