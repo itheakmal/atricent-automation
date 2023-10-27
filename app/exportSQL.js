@@ -73,10 +73,17 @@ exports.exportSQL = async (filePath, fileName) => {
 
 
     // })
-    const mysql = require('mysql2');
+    // const mysql = require('mysql2');
+    // const connection = mysql.createConnection({
+    //     host: 'dbaas-db-1815241-do-user-7338207-0.b.db.ondigitalocean.com',
+    //     port: 25060,
+    //     user: 'doadmin',
+    //     password: 'AVNS_o9klOLdLGD5avJq3GMt',
+    //     database: 'live_atricent',
+    // });
+    const mysql = require('mysql2/promise');
 
-    // create the connection to database
-    const connection = mysql.createConnection({
+    const connection = await mysql.createConnection({
         host: 'dbaas-db-1815241-do-user-7338207-0.b.db.ondigitalocean.com',
         port: 25060,
         user: 'doadmin',
