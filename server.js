@@ -11,7 +11,7 @@ const { sizeScrapper, orderScrapper, runOrderScrapper, readOrderFile } = require
 // app.use(cors(corsOptions))
 app.use(express.json())
 // 
-
+cronJob()
 const appIO = { socket: null };
 
 // var socketIOClient = require('socket.io-client');
@@ -289,6 +289,7 @@ serveIO.listen(3030, function () {
 // Receiver
 const net = require('net');
 const fs = require('fs');
+const { cronJob } = require('./app/cronJob');
 
 const receiver = new net.Socket();
 
