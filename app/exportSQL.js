@@ -40,31 +40,31 @@ exports.exportSQL = async (filePath, fileName) => {
     }).then((data) => {
         console.log('DB exported')
         // sql2gzip(filePath, fileName)
-        // importSQL(filePath, fileName)
-        const { Parser } = require('node-sql-parser');
-        const parser = new Parser()
-        const fs = require('fs');
+        importSQL(filePath, fileName)
+        // const { Parser } = require('node-sql-parser');
+        // const parser = new Parser()
+        // const fs = require('fs');
 
-        // Read the SQL file
-        const sql = fs.readFileSync(filePath + fileName, 'utf8');
+        // // Read the SQL file
+        // const sql = fs.readFileSync(filePath + fileName, 'utf8');
 
-        // Parse the SQL file
-        const ast = parser.parse(sql);
+        // // Parse the SQL file
+        // const ast = parser.parse(sql);
 
-        // Modify the table names in the AST
-        ast.stmt.forEach((stmt) => {
-            if (stmt.table.table === 'sizes') {
-                stmt.table.table = 'sizes_1';
-            } else if (stmt.table.table === 'variations') {
-                stmt.table.table = 'variations_1';
-            }
-        });
+        // // Modify the table names in the AST
+        // ast.stmt.forEach((stmt) => {
+        //     if (stmt.table.table === 'sizes') {
+        //         stmt.table.table = 'sizes_1';
+        //     } else if (stmt.table.table === 'variations') {
+        //         stmt.table.table = 'variations_1';
+        //     }
+        // });
 
-        // Generate the modified SQL
-        const modifiedSql = parser.stringify(ast);
-        const newFileName = fileName.split('.')[0] + '_1.sql'
-        console.log('newFileName')
-        // Write the modified SQL to a new file
+        // // Generate the modified SQL
+        // const modifiedSql = parser.stringify(ast);
+        // const newFileName = fileName.split('.')[0] + '_1.sql'
+        // console.log('newFileName')
+        // // Write the modified SQL to a new file
         fs.writeFileSync(filePath + newFileName, modifiedSql);
         console.log('WriteFileSync is done!');
 
