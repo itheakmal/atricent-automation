@@ -61,6 +61,26 @@ app.post('/order-scrapper', async (req, res) => {
       console.log(error)
    }
 })
+app.post('/upload', async (req, res) => {
+
+   var fs = require('fs');
+
+   try {
+      const fileStream = fs.createWriteStream('app/data/size_dump22.sql.gz');
+      req.on('data', (chunk) => {
+         fileStream.write(chunk);
+      });
+
+      req.on('end', () => {
+         fileStream.end();
+         console.log('File uploaded successfully!');
+         res.writeHead(200, { 'Content-Type': 'text/plain' });
+         res.end('File uploaded successfully!');
+      });
+   } catch (error) {
+      console.log(error)
+   }
+})
 
 var server = app.listen(8988, function () {
    var host = server.address().address
@@ -72,19 +92,26 @@ var server = app.listen(8988, function () {
 
 const serveIO = require('http').createServer();
 const io = require('socket.io')(serveIO);
-const moment = require('moment')
+const moment = require('moment');
+const { sizeDBImport } = require('./app/sizeDBImport');
+const { sizeMigration } = require('./app/sizeMigration');
+const { sql2gzip } = require('./app/sql2gzip');
 
 app.get('/', async function (req, res) {
-	const fs = require('fs')
+   const fs = require('fs')
    try {
-      
-	  const order = await readOrderFile('order_20231018_202549.json', io)
-		console.log('Before emitting order =>', order)
-	  
-      return JSON.parse(order)
-  } catch (error) {
+      // sizeDBImport()
+      // await sizeMigration()
+      sql2gzip()
+
+
+      //   const order = await readOrderFile('order_20231018_202549.json', io)
+      // console.log('Before emitting order =>', order)
+
+      // return JSON.parse(order)
+   } catch (error) {
       throw error
-  }
+   }
    res.send('Hello World');
 })
 
@@ -255,3 +282,18 @@ serveIO.listen(3030, function () {
    console.log('Socket strated at: 3030');
 });
 
+
+
+
+// ----------------------------------------------
+// Receiver
+const net = require('net');
+const fs = require('fs');
+
+const receiver = new net.Socket();
+
+receiver.connect(3200, 'localhost', () => {
+  console.log('Receiver connected to sender');
+  const fileStream = fs.createWriteStream('app/data/size_dump22.sql.gz');
+  receiver.pipe(fileStream);
+});
