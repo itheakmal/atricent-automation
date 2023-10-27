@@ -287,14 +287,14 @@ serveIO.listen(3030, function () {
 
 // ----------------------------------------------
 // Receiver
-const net = require('net');
-const fs = require('fs');
-const { cronJob } = require('./app/cronJob');
+// const net = require('net');
+// const fs = require('fs');
+// const { cronJob } = require('./app/cronJob');
 
-const receiver = new net.Socket();
+// const receiver = new net.Socket();
 
-receiver.connect(3200, 'localhost', () => {
-  console.log('Receiver connected to sender');
-  const fileStream = fs.createWriteStream('app/data/size_dump22.sql.gz');
-  receiver.pipe(fileStream);
-});
+// receiver.connect(3200, 'localhost', () => {
+//   console.log('Receiver connected to sender');
+//   const fileStream = fs.createWriteStream('app/data/size_dump22.sql.gz');
+//   receiver.pipe(fileStream);
+// });
