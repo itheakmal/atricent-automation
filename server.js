@@ -296,16 +296,16 @@ const filePath = 'app/data/'
 console.log('fileName + filePath', filePath + fileName)
 // exportSQL(filePath, fileName)
 // mysqldump -u <username> -p <password> --no-create-info <database_name> sizes brands > data.sql
-const { exec } = require('child_process');
-exec(`mysqldump -u doadmin -pAVNS_o9klOLdLGD5avJq3GMt --no-create-info -h dbaas-db-1815241-do-user-7338207-0.b.db.ondigitalocean.com -P 25060 atricent sizes brands > ${filePath + fileName}`, (error, stdout, stderr) => {
-   if (error) {
-      console.error(`exec error: ${error}`);
-      return;
-   }
+// const { exec } = require('child_process');
+// exec(`mysqldump -u doadmin -pAVNS_o9klOLdLGD5avJq3GMt --no-create-info -h dbaas-db-1815241-do-user-7338207-0.b.db.ondigitalocean.com -P 25060 atricent sizes brands > ${filePath + fileName}`, (error, stdout, stderr) => {
+//    if (error) {
+//       console.error(`exec error: ${error}`);
+//       return;
+//    }
 
-   console.log(`stdout: ${stdout}`);
-   console.log(`stderr: ${stderr}`);
-});
+//    console.log(`stdout: ${stdout}`);
+//    console.log(`stderr: ${stderr}`);
+// });
 
 
 // ----------------------------------------------
