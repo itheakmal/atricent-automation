@@ -34,7 +34,7 @@ if (connection2) {
 connection1.connect((err) => {
     if (err) throw err;
     console.log('Connected to connection1!');
-    const sql = 'SELECT * FROM sizes LIMIT 10';
+    const sql = 'SELECT * FROM sizes';
     connection1.query(sql, (err, result) => {
       if (err) throw err;
       console.log(`${result.length} record(s) retrieved from sizes`);
