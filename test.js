@@ -45,11 +45,14 @@ if (connection2) {
 // variations
 connection1.connect((err) => {
     if (err) throw err;
+    console.time('first')
+    console.time('second')
     console.log('Connected to connection1!');
     const sql = 'SELECT * FROM variations';
     connection1.query(sql, (err, result) => {
         if (err) throw err;
         console.log(`${result.length} record(s) retrieved from variations`);
+        console.timeEnd('first')
         connection2.connect((err) => {
             if (err) throw err;
             console.log('Connected to connection2!');
@@ -58,18 +61,29 @@ connection1.connect((err) => {
             connection2.query(sql, [values], (err, result) => {
                 if (err) throw err;
                 console.log(`${result.affectedRows} record(s) inserted into variations`);
+                console.timeEnd('second')
+
+                connection1.end((err) => {
+                    if (err) throw err;
+                    console.log('Connection1 closed!');
+                });
+
+                connection2.end((err) => {
+                    if (err) throw err;
+                    console.log('Connection2 closed!');
+                });
             });
         });
     });
 });
 
 
-connection1.end((err) => {
-    if (err) throw err;
-    console.log('Connection1 closed!');
-});
+// connection1.end((err) => {
+//     if (err) throw err;
+//     console.log('Connection1 closed!');
+// });
 
-connection2.end((err) => {
-    if (err) throw err;
-    console.log('Connection2 closed!');
-});
+// connection2.end((err) => {
+//     if (err) throw err;
+//     console.log('Connection2 closed!');
+// });
