@@ -19,6 +19,8 @@ exports.exportSQL = async (filePath, fileName) => {
     // dump the result straight to a compressed file
     // const dumpDB = () => {
 // mysql -u doadmin -pAVNS_o9klOLdLGD5avJq3GMt -h dbaas-db-1815241-do-user-7338207-0.b.db.ondigitalocean.com -P 25060 atricent_scrappers
+// mysqldump -u <username> -p <password> --no-create-info <database_name> sizes brands > data.sql
+
     console.log('file started')
     mysqldump({
         connection: {
