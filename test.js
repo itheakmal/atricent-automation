@@ -50,3 +50,14 @@ connection1.connect((err) => {
       });
     });
   });
+
+
+  connection1.end((err) => {
+    if (err) throw err;
+    console.log('Connection1 closed!');
+  });
+  
+  connection2.end((err) => {
+    if (err) throw err;
+    console.log('Connection2 closed!');
+  });
