@@ -1,7 +1,7 @@
 const { sizeScrapper } = require("../scrapper");
 const sizeScrapperQueue = require("./sizeScrapperQueue");
 
-exports.processSize = async (data, io) => {
+exports.processSize = async (data) => {
     let cartSizes = [];
     let appResult = []
     let index = 0;
@@ -14,7 +14,6 @@ exports.processSize = async (data, io) => {
                 // Enqueue the sizeScrapper job
                 const job = await sizeScrapperQueue.add({
                     link: varItem.link.link,
-                    io: JSON.stringify(io),
                     id: varItem.id,
                     num,
                     count,
