@@ -159,7 +159,7 @@ io.on('connection', socket => {
       // make new function for this process
       // add each call to the queue as a new job
       // cartQueue.add({uuid: data.uuid})
-      const cartSizes = await processSize(data)
+      const cartSizes = await processSize(data, io)
 
 
       // ---------------------------------- jugad
