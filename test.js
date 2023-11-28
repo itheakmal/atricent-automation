@@ -21,27 +21,6 @@ if (connection2) {
     console.log('connected2')
 }
 
-// sizes
-// connection1.connect((err) => {
-//     if (err) throw err;
-//     console.log('Connected to connection1!');
-//     const sql = 'SELECT * FROM sizes';
-//     connection1.query(sql, (err, result) => {
-//         if (err) throw err;
-//         console.log(`${result.length} record(s) retrieved from sizes`);
-//         connection2.connect((err) => {
-//             if (err) throw err;
-//             console.log('Connected to connection2!');
-//             const sql = 'INSERT INTO sizes (id, variation_id, meta, status) VALUES ?';
-//             const values = result.map(record => [record.id, record.variation_id, record.meta, record.status]);
-//             connection2.query(sql, [values], (err, result) => {
-//                 if (err) throw err;
-//                 console.log(`${result.affectedRows} record(s) inserted into table2`);
-//             });
-//         });
-//     });
-// });
-
 // variations
 connection1.connect((err) => {
     if (err) throw err;
@@ -76,14 +55,3 @@ connection1.connect((err) => {
         });
     });
 });
-
-
-// connection1.end((err) => {
-//     if (err) throw err;
-//     console.log('Connection1 closed!');
-// });
-
-// connection2.end((err) => {
-//     if (err) throw err;
-//     console.log('Connection2 closed!');
-// });
