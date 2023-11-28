@@ -150,7 +150,7 @@ io.on('connection', socket => {
    });
    // 
    appIO.socket.on('sizeScrapper', async function (data) {
-      // console.log('sizeScrapper data', data)
+      
       let cartSizes = [];
       let appResult = []
       let index = 0;
