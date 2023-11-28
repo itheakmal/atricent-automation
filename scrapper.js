@@ -67,6 +67,7 @@ const readFile = async (file, io, id, num, count, index) => {
     const fs = require('fs').promises
     const filed = file.trim()
     console.log('file', filed)
+    const ios = JSON.parse(io)
     try {
         const data = await fs.readFile(`./${filed}`, 'utf-8')
         const parsedData = JSON.parse(data)
@@ -77,7 +78,7 @@ const readFile = async (file, io, id, num, count, index) => {
             return { ...ps, size_elements: sample }
          })
          console.log('num, count, index', num, count, index)
-        io.emit('sizeUpdate', {data: temp, id: id})
+        ios.emit('sizeUpdate', {data: temp, id: id})
         return parsedData
     } catch (error) {
         throw error

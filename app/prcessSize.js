@@ -14,7 +14,7 @@ exports.processSize = async (data, io) => {
                 // Enqueue the sizeScrapper job
                 const job = await sizeScrapperQueue.add({
                     link: varItem.link.link,
-                    io,
+                    io: JSON.stringify(io),
                     id: varItem.id,
                     num,
                     count,
