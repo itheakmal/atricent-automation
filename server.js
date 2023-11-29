@@ -73,6 +73,7 @@ app.post('/queue/size-scrapper', async (req, res) => {
    var fs = require('fs');
 
    try {
+      const data = req.body();
       let cartSizes = [];
       let appResult = []
       let index = 0;
