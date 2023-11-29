@@ -77,6 +77,7 @@ app.post('/queue/size-scrapper', async (req, res) => {
       let cartSizes = [];
       let appResult = []
       let index = 0;
+      console.log(data);
       for await (const cartItem of data.carts) {
          let count = 0;
          for (const varItem of cartItem.variations) {
