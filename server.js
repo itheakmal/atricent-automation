@@ -5,7 +5,24 @@ var app = express();
 const cors = require('cors')
 const { sizeScrapper, orderScrapper, runOrderScrapper, readOrderFile } = require('./scrapper')
 const { cronJob } = require('./app/cronJob');
+const bodyParser = require('body-parser');
+app.use(bodyParser.raw({ type: '*/*' }));
+const serveIO = require('http').createServer();
+const io = require('socket.io')(serveIO);
+const moment = require('moment');
 
+// const { sizeDBImport } = require('./app/sizeDBImport');
+// const { sizeMigration } = require('./app/sizeMigration');
+const { sql2gzip } = require('./app/sql2gzip');
+const { exportSQL } = require('./app/exportSQL');
+const Pusher = require("pusher");
+const pusher = new Pusher({
+   appId: "1717205",
+   key: "af4116b1b93517d7c40e",
+   secret: "3c265f0cc2beb2f1a29c",
+   cluster: "mt1",
+   useTLS: true
+ });
 // const corsOptions = {
 //    origin: *
 //    // origin: '165.232.147.215'
@@ -17,6 +34,169 @@ app.use(express.json())
 // const { exportSQL } = require("./exportSQL");
 // const moment = require("moment")
 const appIO = { socket: null };
+console.log('appIO.socket:', appIO.socket);
+io.on('connection', socket => {
+   console.log('connected:', socket.client.id);
+   appIO.socket = socket;
+   // 
+   appIO.socket.on('orderScrapper', async function (data) {
+      const momentFileName = moment().format('HHmmssSS')
+      const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
+      try {
+         const data = await asyncTask;
+         console.log('Async task has completed', data);
+         console.log('Async task has completed', data.stdout);
+         const newData = data.stdout.trim()
+         console.log('Trimmed output', newData);
+         const order = await readOrderFile(newData, io)
+         console.log('Before emitting order =>', order)
+         tempOrder = order
+         appIO.socket.emit('orderScrapper', tempOrder);
+
+      } catch (error) {
+         appIO.socket.emit('testOne', "error");
+         appIO.socket.emit('orderScrapper', "error orderscrapper");
+         console.error('Async task encountered an error:', error);
+      }
+   });
+   // 
+   // appIO.socket.on('sizeScrapper', async function (data) {
+      
+   //    let cartSizes = [];
+   //    let appResult = []
+   //    let index = 0;
+   //    for await (const cartItem of data.carts) {
+   //       let count = 0;
+   //       for (const varItem of cartItem.variations) {
+   //          let num = 0;
+   //          if (varItem?.link?.link) {
+
+   //             const result = await sizeScrapper(varItem.link.link, io, varItem.id, num, count, index)
+   //             if (result) {
+   //                for (let item of result) {
+   //                   item.item = varItem
+   //                   item.id = varItem.id
+   //                }
+
+   //                console.log('result', result)
+   //                const parsedSize = result
+   //                if (parsedSize.length) {
+   //                   let tempID = null
+   //                   const temp = parsedSize.map(ps => {
+   //                      if (tempID !== ps.id) {
+   //                         tempID = ps.id
+   //                      }
+   //                      const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+   //                      return { ...ps, size_elements: sample }
+   //                   })
+   //                   console.log('tempID before emitting ==>', tempID)
+   //                   console.log('temp before emitting ==>', temp)
+   //                   // appResult.push({id:tempID, data: temp})
+
+   //                   // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
+   //                   // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
+   //                   // await deleteGeneratedFile(stdout)
+
+   //                   const firstMatch = parsedSize.filter(size => {
+
+   //                      const tempType = size.type !== null ? size.type.toLowerCase() : size.type
+   //                      const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
+
+   //                      const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
+   //                      const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
+
+   //                      return tempType === givenType && tempLength === givenLength
+   //                   })
+
+   //                   if (firstMatch.length) {
+   //                      for (let item of firstMatch) {
+   //                         if (item.size_elements !== null) {
+
+   //                            console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
+   //                            const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
+   //                            console.log('ele', ele)
+   //                            if (ele === -1) {
+   //                               const sizesReturned = {
+   //                                  id: item.item.id,
+   //                                  error: 'Size not available, wanna checkout other sizes'
+   //                               }
+   //                               cartSizes.push(sizesReturned)
+   //                            }
+   //                         } else {
+   //                            const sizesReturned = {
+   //                               id: item.item.id,
+   //                               error: 'All sizes are out of stock'
+   //                            }
+   //                            cartSizes.push(sizesReturned)
+   //                         }
+   //                      }
+   //                   } else {
+   //                      let id = 0
+   //                      for (let temp of parsedSize) {
+   //                         id = temp.id
+   //                         break
+   //                      }
+   //                      const sizesReturned = {
+   //                         id: id,
+   //                         error: 'No size available'
+   //                      }
+   //                      cartSizes.push(sizesReturned)
+   //                   }
+
+   //                } else {
+   //                   console.log('no data returned from the scrapper')
+   //                }
+   //                // appIO.socket.emit('sizeScrapper', result);
+   //             } else {
+   //                console.log('in else result', result)
+   //                const temp = {}
+   //                temp.response = result
+   //                temp.id = varItem.id
+   //                // appIO.socket.emit('sizeScrapper', [temp]);
+   //             }
+   //          } else {
+   //             console.log('in else result', result)
+   //             const temp = {}
+   //             temp.response = "Variation does not have link"
+   //             temp.id = varItem.id
+   //             cartSizes.push(temp)
+   //          }
+   //          num++
+   //       }
+   //       count++
+   //    }
+
+
+   //    // ---------------------------------- jugad
+
+
+
+
+
+
+   //    // }
+
+
+   //    console.log('cartSizes before emiting event-->', cartSizes)
+
+   //    // for (let cartItem of cartSizes) {
+   //    //    appResult[cartItem.id] = cartItem.error
+   //    // }
+   //    // console.log('appResult before emiting event-->', appResult)
+
+   //    // appIO.socket.emit('sizeUpdate', appResult)
+   //    appIO.socket.emit('sizeScrapperApp', cartSizes);
+   //    // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
+   //    cartSizes = [];
+   //    // appResult = [];
+
+
+
+
+
+
+   // })
+});
 // 
 // cronJob()
 
@@ -73,12 +253,13 @@ app.post('/queue/size-scrapper', async (req, res) => {
    var fs = require('fs');
 
    try {
-      const data = req.body;
+      const rawBody = req.body.toString('utf-8');
+      const payload = JSON.parse(rawBody);
+      const data = payload;
       let cartSizes = [];
       let appResult = []
       let index = 0;
-      console.log(data);
-      for await (const cartItem of data.carts) {
+      for await (const cartItem of payload.carts) {
          let count = 0;
          for (const varItem of cartItem.variations) {
             let num = 0;
@@ -102,8 +283,8 @@ app.post('/queue/size-scrapper', async (req, res) => {
                         const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
                         return { ...ps, size_elements: sample }
                      })
-                     console.log('tempID before emitting ==>', tempID)
-                     console.log('temp before emitting ==>', temp)
+                     // console.log('tempID before emitting ==>', tempID)
+                     // console.log('temp before emitting ==>', temp)
                      // appResult.push({id:tempID, data: temp})
 
                      // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
@@ -125,7 +306,7 @@ app.post('/queue/size-scrapper', async (req, res) => {
                         for (let item of firstMatch) {
                            if (item.size_elements !== null) {
 
-                              console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
+                              // console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
                               const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
                               console.log('ele', ele)
                               if (ele === -1) {
@@ -190,7 +371,7 @@ app.post('/queue/size-scrapper', async (req, res) => {
       // }
 
 
-      console.log('cartSizes before emiting event-->', cartSizes)
+      console.log('cartSizes before emiting event-->')
 
       // for (let cartItem of cartSizes) {
       //    appResult[cartItem.id] = cartItem.error
@@ -198,7 +379,16 @@ app.post('/queue/size-scrapper', async (req, res) => {
       // console.log('appResult before emiting event-->', appResult)
 
       // appIO.socket.emit('sizeUpdate', appResult)
-      appIO.socket.emit('sizeScrapperApp', cartSizes);
+      // io.on('connection', socket => {
+      // console.log('client id  ====== ',socket.client.id);
+      // console.log(`emittedinnnn ============= `, {cartSizes: cartSizes, userId: payload.userId});
+      //    socket.emit('sizeScrapperApp', {cartSizes: cartSizes, userId: payload.userId});
+      // })
+      appIO.socket.emit('sizeScrapperApp', {cartSizes: cartSizes, userId: payload.userId});
+      pusher.trigger("my-channel", "my-event", {
+         message: {cartSizes: cartSizes, userId: payload.userId}
+       });
+      console.log(`emitted ============= `, {cartSizes: cartSizes, userId: payload.userId});
       // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
       cartSizes = [];
       return res.status(200).json({
@@ -220,13 +410,7 @@ var server = app.listen(8988, function () {
 })
 
 
-const serveIO = require('http').createServer();
-const io = require('socket.io')(serveIO);
-const moment = require('moment');
-// const { sizeDBImport } = require('./app/sizeDBImport');
-// const { sizeMigration } = require('./app/sizeMigration');
-const { sql2gzip } = require('./app/sql2gzip');
-const { exportSQL } = require('./app/exportSQL');
+
 
 app.get('/', async function (req, res) {
    const fs = require('fs')
@@ -246,169 +430,7 @@ app.get('/', async function (req, res) {
    res.send('Hello World');
 })
 
-console.log('appIO.socket:', appIO.socket);
-io.on('connection', socket => {
-   console.log('connected:', socket.client.id);
-   appIO.socket = socket;
-   // 
-   appIO.socket.on('orderScrapper', async function (data) {
-      const momentFileName = moment().format('HHmmssSS')
-      const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
-      try {
-         const data = await asyncTask;
-         console.log('Async task has completed', data);
-         console.log('Async task has completed', data.stdout);
-         const newData = data.stdout.trim()
-         console.log('Trimmed output', newData);
-         const order = await readOrderFile(newData, io)
-         console.log('Before emitting order =>', order)
-         tempOrder = order
-         appIO.socket.emit('orderScrapper', tempOrder);
 
-      } catch (error) {
-         appIO.socket.emit('testOne', "error");
-         appIO.socket.emit('orderScrapper', "error orderscrapper");
-         console.error('Async task encountered an error:', error);
-      }
-   });
-   // 
-   appIO.socket.on('sizeScrapper', async function (data) {
-      
-      let cartSizes = [];
-      let appResult = []
-      let index = 0;
-      for await (const cartItem of data.carts) {
-         let count = 0;
-         for (const varItem of cartItem.variations) {
-            let num = 0;
-            if (varItem?.link?.link) {
-
-               const result = await sizeScrapper(varItem.link.link, io, varItem.id, num, count, index)
-               if (result) {
-                  for (let item of result) {
-                     item.item = varItem
-                     item.id = varItem.id
-                  }
-
-                  console.log('result', result)
-                  const parsedSize = result
-                  if (parsedSize.length) {
-                     let tempID = null
-                     const temp = parsedSize.map(ps => {
-                        if (tempID !== ps.id) {
-                           tempID = ps.id
-                        }
-                        const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
-                        return { ...ps, size_elements: sample }
-                     })
-                     console.log('tempID before emitting ==>', tempID)
-                     console.log('temp before emitting ==>', temp)
-                     // appResult.push({id:tempID, data: temp})
-
-                     // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
-                     // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
-                     // await deleteGeneratedFile(stdout)
-
-                     const firstMatch = parsedSize.filter(size => {
-
-                        const tempType = size.type !== null ? size.type.toLowerCase() : size.type
-                        const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
-
-                        const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
-                        const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
-
-                        return tempType === givenType && tempLength === givenLength
-                     })
-
-                     if (firstMatch.length) {
-                        for (let item of firstMatch) {
-                           if (item.size_elements !== null) {
-
-                              console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
-                              const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
-                              console.log('ele', ele)
-                              if (ele === -1) {
-                                 const sizesReturned = {
-                                    id: item.item.id,
-                                    error: 'Size not available, wanna checkout other sizes'
-                                 }
-                                 cartSizes.push(sizesReturned)
-                              }
-                           } else {
-                              const sizesReturned = {
-                                 id: item.item.id,
-                                 error: 'All sizes are out of stock'
-                              }
-                              cartSizes.push(sizesReturned)
-                           }
-                        }
-                     } else {
-                        let id = 0
-                        for (let temp of parsedSize) {
-                           id = temp.id
-                           break
-                        }
-                        const sizesReturned = {
-                           id: id,
-                           error: 'No size available'
-                        }
-                        cartSizes.push(sizesReturned)
-                     }
-
-                  } else {
-                     console.log('no data returned from the scrapper')
-                  }
-                  // appIO.socket.emit('sizeScrapper', result);
-               } else {
-                  console.log('in else result', result)
-                  const temp = {}
-                  temp.response = result
-                  temp.id = varItem.id
-                  // appIO.socket.emit('sizeScrapper', [temp]);
-               }
-            } else {
-               console.log('in else result', result)
-               const temp = {}
-               temp.response = "Variation does not have link"
-               temp.id = varItem.id
-               cartSizes.push(temp)
-            }
-            num++
-         }
-         count++
-      }
-
-
-      // ---------------------------------- jugad
-
-
-
-
-
-
-      // }
-
-
-      console.log('cartSizes before emiting event-->', cartSizes)
-
-      // for (let cartItem of cartSizes) {
-      //    appResult[cartItem.id] = cartItem.error
-      // }
-      // console.log('appResult before emiting event-->', appResult)
-
-      // appIO.socket.emit('sizeUpdate', appResult)
-      appIO.socket.emit('sizeScrapperApp', cartSizes);
-      // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
-      cartSizes = [];
-      // appResult = [];
-
-
-
-
-
-
-   })
-});
 serveIO.listen(3030, function () {
    console.log('Socket strated at: 3030');
 });
