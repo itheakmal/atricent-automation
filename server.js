@@ -22,7 +22,7 @@ const pusher = new Pusher({
    secret: "3c265f0cc2beb2f1a29c",
    cluster: "mt1",
    useTLS: true
- });
+});
 // const corsOptions = {
 //    origin: *
 //    // origin: '165.232.147.215'
@@ -61,7 +61,7 @@ io.on('connection', socket => {
    });
    // 
    // appIO.socket.on('sizeScrapper', async function (data) {
-      
+
    //    let cartSizes = [];
    //    let appResult = []
    //    let index = 0;
@@ -248,6 +248,53 @@ app.post('/order-scrapper', async (req, res) => {
       console.log(error)
    }
 })
+app.post('/queue/order-scrapper', async (req, res) => {
+   const rawBody = req.body.toString('utf-8');
+   const payload = JSON.parse(rawBody);
+   const data = req.body
+   console.log('payload', payload)
+   console.log('data', data)
+   try {
+
+
+
+      // appIO.socket.on('orderScrapper', async function (data) {
+      const momentFileName = moment().format('HHmmssSS')
+      const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
+      try {
+         const data = await asyncTask;
+         console.log('Async task has completed', data);
+         console.log('Async task has completed', data.stdout);
+         const newData = data.stdout.trim()
+         console.log('Trimmed output', newData);
+         const order = await readOrderFile(newData, io)
+         console.log('Before emitting order =>', order)
+         tempOrder = order
+
+         // sent this to new queue
+         appIO.socket.emit('orderScrapper', tempOrder);
+
+      } catch (error) {
+         appIO.socket.emit('testOne', "error");
+         appIO.socket.emit('orderScrapper', "error orderscrapper");
+         console.error('Async task encountered an error:', error);
+      }
+      // });
+
+
+
+
+
+      // const result = await orderScrapper(data.cartItem, data.scrapper, appIO)
+      console.log('result', result)
+      res.json(result);
+      return res.status(200).json({
+         message: 'success'
+      });
+   } catch (error) {
+      console.log(error)
+   }
+})
 app.post('/queue/size-scrapper', async (req, res) => {
 
    var fs = require('fs');
@@ -384,11 +431,11 @@ app.post('/queue/size-scrapper', async (req, res) => {
       // console.log(`emittedinnnn ============= `, {cartSizes: cartSizes, userId: payload.userId});
       //    socket.emit('sizeScrapperApp', {cartSizes: cartSizes, userId: payload.userId});
       // })
-      appIO.socket.emit('sizeScrapperApp', {cartSizes: cartSizes, userId: payload.userId});
+      appIO.socket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: payload.userId });
       pusher.trigger("my-channel", "my-event", {
-         message: {cartSizes: cartSizes, userId: payload.userId}
-       });
-      console.log(`emitted ============= `, {cartSizes: cartSizes, userId: payload.userId});
+         message: { cartSizes: cartSizes, userId: payload.userId }
+      });
+      console.log(`emitted ============= `, { cartSizes: cartSizes, userId: payload.userId });
       // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes });
       cartSizes = [];
       return res.status(200).json({
