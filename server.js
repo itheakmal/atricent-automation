@@ -270,7 +270,7 @@ app.post('/queue/order-scrapper', async (req, res) => {
          const order = await readOrderFile(newData, io)
          console.log('Before emitting order =>', order)
          tempOrder = order
-
+console.log('tempOrder', tempOrder)
          // sent this to new queue
          appIO.socket.emit('orderScrapper', tempOrder);
 
@@ -286,13 +286,16 @@ app.post('/queue/order-scrapper', async (req, res) => {
 
 
       // const result = await orderScrapper(data.cartItem, data.scrapper, appIO)
-      console.log('result', result)
-      res.json(result);
+      // console.log('result', result)
+      // res.json(result);
       return res.status(200).json({
          message: 'success'
       });
    } catch (error) {
       console.log(error)
+      return res.status(423).json({
+         message: 'failure'
+      })
    }
 })
 app.post('/queue/size-scrapper', async (req, res) => {
