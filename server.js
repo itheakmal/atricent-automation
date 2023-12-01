@@ -54,7 +54,8 @@ io.on('connection', socket => {
          appIO.socket.emit('orderScrapper', tempOrder);
 
       } catch (error) {
-         appIO.socket.emit('testOne', "error");
+         // commented due to error
+         // appIO.socket.emit('testOne', "error");
          appIO.socket.emit('orderScrapper', "error orderscrapper");
          console.error('Async task encountered an error:', error);
       }
@@ -251,9 +252,9 @@ app.post('/order-scrapper', async (req, res) => {
 app.post('/queue/order-scrapper', async (req, res) => {
    const rawBody = req.body.toString('utf-8');
    const payload = JSON.parse(rawBody);
-   const data = req.body
+   const data = payload
    console.log('payload', payload)
-   console.log('data', data)
+   // console.log('data', data)
    try {
 
 

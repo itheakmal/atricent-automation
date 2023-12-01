@@ -102,7 +102,8 @@ exports.readOrderFile = async (file, io) => {
 
             }
         }
-        io.emit("testOne", data);
+        // this emit is commented
+        // io.emit("testOne", data);
         // console.log('User service data', data);
         return data;
     } catch (err) {
