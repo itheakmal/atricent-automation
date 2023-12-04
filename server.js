@@ -306,6 +306,9 @@ console.log('tempOrder', tempOrder)
       });
    } catch (error) {
       console.log(error)
+      return res.status(200).json({
+         message: 'success'
+      });
       return res.status(423).json({
          message: 'failure'
       })
@@ -459,6 +462,7 @@ app.post('/queue/size-scrapper', async (req, res) => {
       });
    } catch (error) {
       console.log(error);
+      return res.status(200)
       return res.status(423).json({
          message: 'failure'
       })
