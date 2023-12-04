@@ -11,6 +11,16 @@ const serveIO = require('http').createServer();
 const io = require('socket.io')(serveIO);
 const moment = require('moment');
 
+const amqp = require('amqplib/callback_api');
+const connectionURL = 'amqps://pbflpqit:7WIa6sAxQYzZRZKGEX71mZm_ZgNqjkb8@moose.rmq.cloudamqp.com/pbflpqit';
+let ch = null;
+let response = null;
+amqp.connect(connectionURL, function(err,conn) {
+  conn.createChannel(function(err,channel) {
+    ch = channel;
+  })
+}) 
+
 // const { sizeDBImport } = require('./app/sizeDBImport');
 // const { sizeMigration } = require('./app/sizeMigration');
 const { sql2gzip } = require('./app/sql2gzip');
@@ -273,11 +283,13 @@ app.post('/queue/order-scrapper', async (req, res) => {
          tempOrder = order
 console.log('tempOrder', tempOrder)
          // sent this to new queue
-         appIO.socket.emit('orderScrapper', tempOrder);
+         // commented implemented the queue
+         // appIO.socket.emit('orderScrapper', tempOrder);
+         ch.sendToQueue('orderScrapperQueue', Buffer.from(JSON.stringify({ tempOrder })));
 
       } catch (error) {
-         appIO.socket.emit('testOne', "error");
-         appIO.socket.emit('orderScrapper', "error orderscrapper");
+         // appIO.socket.emit('testOne', "error");
+         // appIO.socket.emit('orderScrapper', "error orderscrapper");
          console.error('Async task encountered an error:', error);
       }
       // });
