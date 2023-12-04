@@ -15,11 +15,11 @@ const amqp = require('amqplib/callback_api');
 const connectionURL = 'amqps://pbflpqit:7WIa6sAxQYzZRZKGEX71mZm_ZgNqjkb8@moose.rmq.cloudamqp.com/pbflpqit';
 let ch = null;
 let response = null;
-amqp.connect(connectionURL, function(err,conn) {
-  conn.createChannel(function(err,channel) {
-    ch = channel;
-  })
-}) 
+amqp.connect(connectionURL, function (err, conn) {
+   conn.createChannel(function (err, channel) {
+      ch = channel;
+   })
+})
 
 // const { sizeDBImport } = require('./app/sizeDBImport');
 // const { sizeMigration } = require('./app/sizeMigration');
@@ -262,7 +262,7 @@ app.post('/order-scrapper', async (req, res) => {
 app.post('/queue/order-scrapper', async (req, res) => {
    const rawBody = req.body.toString('utf-8');
    const payload = JSON.parse(rawBody);
-   const data = payload
+   // const data = payload
    console.log('payload', payload)
    // console.log('data', data)
    try {
@@ -271,21 +271,21 @@ app.post('/queue/order-scrapper', async (req, res) => {
 
       // appIO.socket.on('orderScrapper', async function (data) {
       const momentFileName = moment().format('HHmmssSS')
-      const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
+      const asyncTask = runOrderScrapper(payload.cartItem, payload.scrapper, momentFileName)
       // try {
-         const data = await asyncTask;
-         console.log('Async task has completed', data);
-         console.log('Async task has completed', data.stdout);
-         const newData = data.stdout.trim()
-         console.log('Trimmed output', newData);
-         const order = await readOrderFile(newData, io)
-         console.log('Before emitting order =>', order)
-         tempOrder = order
-console.log('tempOrder', tempOrder)
-         // sent this to new queue
-         // commented implemented the queue
-         // appIO.socket.emit('orderScrapper', tempOrder);
-         ch.sendToQueue('orderScrapperQueue', Buffer.from(JSON.stringify({ tempOrder })));
+      const data = await asyncTask;
+      console.log('Async task has completed', data);
+      console.log('Async task has completed', data.stdout);
+      const newData = data.stdout.trim()
+      console.log('Trimmed output', newData);
+      const order = await readOrderFile(newData, io)
+      console.log('Before emitting order =>', order)
+      tempOrder = order
+      console.log('tempOrder', tempOrder)
+      // sent this to new queue
+      // commented implemented the queue
+      // appIO.socket.emit('orderScrapper', tempOrder);
+      ch.sendToQueue('orderScrapperQueue', Buffer.from(JSON.stringify({ tempOrder })));
 
       // } catch (error) {
       //    // appIO.socket.emit('testOne', "error");
