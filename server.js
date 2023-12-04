@@ -288,7 +288,7 @@ console.log('tempOrder', tempOrder)
          ch.sendToQueue('orderScrapperQueue', Buffer.from(JSON.stringify({ tempOrder })));
 
       } catch (error) {
-         // appIO.socket.emit('testOne', "error");
+         appIO.socket.emit('testOne', "error");
          // appIO.socket.emit('orderScrapper', "error orderscrapper");
          console.error('Async task encountered an error:', error);
       }
