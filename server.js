@@ -272,7 +272,7 @@ app.post('/queue/order-scrapper', async (req, res) => {
       // appIO.socket.on('orderScrapper', async function (data) {
       const momentFileName = moment().format('HHmmssSS')
       const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
-      try {
+      // try {
          const data = await asyncTask;
          console.log('Async task has completed', data);
          console.log('Async task has completed', data.stdout);
@@ -287,11 +287,14 @@ console.log('tempOrder', tempOrder)
          // appIO.socket.emit('orderScrapper', tempOrder);
          ch.sendToQueue('orderScrapperQueue', Buffer.from(JSON.stringify({ tempOrder })));
 
-      } catch (error) {
-         appIO.socket.emit('testOne', "error");
-         // appIO.socket.emit('orderScrapper', "error orderscrapper");
-         console.error('Async task encountered an error:', error);
-      }
+      // } catch (error) {
+      //    // appIO.socket.emit('testOne', "error");
+      //    // appIO.socket.emit('orderScrapper', "error orderscrapper");
+      //    console.error('Async task encountered an error:', error);
+      //    return res.status(200).json({
+      //       message: 'success'
+      //    });
+      // }
       // });
 
 
