@@ -480,6 +480,7 @@ app.post('/bull/size-scrapper', async (req, res) => {
       const rawBody = req.body.toString('utf-8');
       console.log('rawBody', rawBody)
       const payload = JSON.parse(rawBody)
+      console.log('payload', payload)
       let cartSizes = [];
       let appResult = []
       let index = 0;
