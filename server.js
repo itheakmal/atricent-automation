@@ -475,7 +475,7 @@ app.post('/queue/size-scrapper', async (req, res) => {
 app.post('/bull/size-scrapper', async (req, res) => {
 
    // var fs = require('fs');
-console.log('first')
+   console.log('first')
    try {
       const rawBody = req.body.toString('utf-8');
       console.log('rawBody', rawBody)
@@ -489,7 +489,7 @@ console.log('first')
             let num = 0;
             if (varItem?.link?.link) {
 
-               const result = await sizeScrapper(varItem.link.link, io, varItem.id, num, count, index)
+               const result = await sizeScrapper(varItem.link.link, varItem.id)
                if (result) {
                   for (let item of result) {
                      item.item = varItem
@@ -584,31 +584,6 @@ console.log('first')
          count++
       }
 
-
-      // ---------------------------------- jugad
-
-
-
-
-
-
-      // }
-
-
-      console.log('cartSizes before emiting event-->')
-
-      // for (let cartItem of cartSizes) {
-      //    appResult[cartItem.id] = cartItem.error
-      // }
-      // console.log('appResult before emiting event-->', appResult)
-
-      // appIO.socket.emit('sizeUpdate', appResult)
-      // io.on('connection', socket => {
-      // console.log('client id  ====== ',socket.client.id);
-      // console.log(`emittedinnnn ============= `, {cartSizes: cartSizes, userId: payload.userId});
-      //    socket.emit('sizeScrapperApp', {cartSizes: cartSizes, userId: payload.userId});
-      // })
-      // appIO.socket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: payload.userId });
       pusher.trigger("my-channel", "my-event", {
          message: { cartSizes: cartSizes, userId: payload.userId }
       });
