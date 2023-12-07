@@ -477,10 +477,10 @@ app.post('/bull/size-scrapper', async (req, res) => {
    // var fs = require('fs');
 console.log('first')
    try {
-      const rawBody = req.body.toString('utf-8');
+      const rawBody = req.body;
       console.log('rawBody', rawBody)
-      const payload = JSON.parse(rawBody);
-      console.log('payload', payload)
+      const payload = rawBody
+      // console.log('payload', payload)
       await setTimeout(()=>console.log('waiting'), 15000)
       return res.status(200).json({
          message: 'success'
