@@ -472,6 +472,28 @@ app.post('/queue/size-scrapper', async (req, res) => {
    }
 })
 
+app.post('/bull/size-scrapper', async (req, res) => {
+
+   var fs = require('fs');
+
+   try {
+      const rawBody = req.body.toString('utf-8');
+      console.log('rawBody', rawBody)
+      const payload = JSON.parse(rawBody);
+      console.log('payload', payload)
+      await setTimeout(()=>console.log('waiting'), 15000)
+      return res.status(200).json({
+         message: 'success'
+      });
+   } catch (error) {
+      console.log(error);
+      // return res.status(200)
+      return res.status(423).json({
+         message: 'failure'
+      })
+   }
+})
+
 var server = app.listen(8988, function () {
    var host = server.address().address
    var port = server.address().port
