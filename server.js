@@ -474,8 +474,8 @@ app.post('/queue/size-scrapper', async (req, res) => {
 
 app.post('/bull/size-scrapper', async (req, res) => {
 
-   var fs = require('fs');
-
+   // var fs = require('fs');
+console.log('first')
    try {
       const rawBody = req.body.toString('utf-8');
       console.log('rawBody', rawBody)
