@@ -503,13 +503,13 @@ TypeError: result is not iterable
 
       const result = await sizeScrapper(payload.link, payload.userId)
       console.log('result', result)
-      if (result) {
-         for (let item of result) {
+      if (result.parsedData) {
+         for (let item of result.parsedData) {
             item.item = varItem
             item.id = varItem.id
          }
 
-         console.log('result', result)
+         
          const parsedSize = result.parsedData
          if (parsedSize.length) {
             let tempID = null
@@ -579,9 +579,9 @@ TypeError: result is not iterable
          }
          // appIO.socket.emit('sizeScrapper', result);
       } else {
-         console.log('in else result', result)
+         console.log('in else result', result.parsedData)
          const temp = {}
-         temp.response = result
+         temp.response = result.parsedData
          temp.id = varItem.id
          // appIO.socket.emit('sizeScrapper', [temp]);
       }
