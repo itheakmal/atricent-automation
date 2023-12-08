@@ -494,6 +494,12 @@ file size20231208_091207.json
 readFile data:  [ { type: null, length: null, size_elements: null } ]
 TypeError: result is not iterable
     at /var/www/atricent-automation/server.js:500:27
+
+result {
+  parsedData: [ { type: null, length: null, size_elements: null } ],
+  sizeUpdate: { data: [ [Object] ], id: 26 }
+}
+
        */
       console.log('payload', payload)
       let cartSizes = [];
@@ -505,8 +511,8 @@ TypeError: result is not iterable
       console.log('result', result)
       if (result.parsedData) {
          for (let item of result.parsedData) {
-            item.item = varItem
-            item.id = varItem.id
+            item.item = payload
+            item.id = payload.id
          }
 
          
