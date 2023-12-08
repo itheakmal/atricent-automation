@@ -488,6 +488,12 @@ app.post('/bull/size-scrapper', async (req, res) => {
   link: 'https://www.forever21.com/us/2000470885.html?dwvar_2000470885_color=01',
   userId: 26
 }
+
+
+file size20231208_091207.json
+readFile data:  [ { type: null, length: null, size_elements: null } ]
+TypeError: result is not iterable
+    at /var/www/atricent-automation/server.js:500:27
        */
       console.log('payload', payload)
       let cartSizes = [];
@@ -496,6 +502,7 @@ app.post('/bull/size-scrapper', async (req, res) => {
 
 
       const result = await sizeScrapper(payload.link, payload.userId)
+      console.log('result', result)
       if (result) {
          for (let item of result) {
             item.item = varItem
@@ -503,7 +510,7 @@ app.post('/bull/size-scrapper', async (req, res) => {
          }
 
          console.log('result', result)
-         const parsedSize = result
+         const parsedSize = result.parsedData
          if (parsedSize.length) {
             let tempID = null
             const temp = parsedSize.map(ps => {

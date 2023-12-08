@@ -70,7 +70,7 @@ const readFile = async (file, id) => {
     try {
         const data = await fs.readFile(`./${filed}`, 'utf-8')
         const parsedData = JSON.parse(data)
-        console.log('readFile data: ', parsedData)
+        // console.log('readFile data: ', parsedData)
         const temp = parsedData.map(ps => {
             
             const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
