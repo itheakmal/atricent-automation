@@ -480,110 +480,105 @@ app.post('/bull/size-scrapper', async (req, res) => {
       const rawBody = req.body.toString('utf-8');
       console.log('rawBody', rawBody)
       const payload = JSON.parse(rawBody)
+      /**
+       * payload {
+  size: [ null, null, 'M' ],
+  id: 67916,
+  quantity: '1',
+  link: 'https://www.forever21.com/us/2000470885.html?dwvar_2000470885_color=01',
+  userId: 26
+}
+       */
       console.log('payload', payload)
       let cartSizes = [];
       let appResult = []
       let index = 0;
-      for await (const cartItem of payload.carts) {
-         let count = 0;
-         for (const varItem of cartItem.variations) {
-            let num = 0;
-            if (varItem?.link?.link) {
 
-               const result = await sizeScrapper(varItem.link.link, varItem.id)
-               if (result) {
-                  for (let item of result) {
-                     item.item = varItem
-                     item.id = varItem.id
-                  }
 
-                  console.log('result', result)
-                  const parsedSize = result
-                  if (parsedSize.length) {
-                     let tempID = null
-                     const temp = parsedSize.map(ps => {
-                        if (tempID !== ps.id) {
-                           tempID = ps.id
-                        }
-                        const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
-                        return { ...ps, size_elements: sample }
-                     })
-                     // console.log('tempID before emitting ==>', tempID)
-                     // console.log('temp before emitting ==>', temp)
-                     // appResult.push({id:tempID, data: temp})
+      const result = await sizeScrapper(payload.link, payload.userId)
+      if (result) {
+         for (let item of result) {
+            item.item = varItem
+            item.id = varItem.id
+         }
 
-                     // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
-                     // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
-                     // await deleteGeneratedFile(stdout)
+         console.log('result', result)
+         const parsedSize = result
+         if (parsedSize.length) {
+            let tempID = null
+            const temp = parsedSize.map(ps => {
+               if (tempID !== ps.id) {
+                  tempID = ps.id
+               }
+               const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+               return { ...ps, size_elements: sample }
+            })
+            // console.log('tempID before emitting ==>', tempID)
+            // console.log('temp before emitting ==>', temp)
+            // appResult.push({id:tempID, data: temp})
 
-                     const firstMatch = parsedSize.filter(size => {
+            // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
+            // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
+            // await deleteGeneratedFile(stdout)
 
-                        const tempType = size.type !== null ? size.type.toLowerCase() : size.type
-                        const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
+            const firstMatch = parsedSize.filter(size => {
 
-                        const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
-                        const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
+               const tempType = size.type !== null ? size.type.toLowerCase() : size.type
+               const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
 
-                        return tempType === givenType && tempLength === givenLength
-                     })
+               const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
+               const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
 
-                     if (firstMatch.length) {
-                        for (let item of firstMatch) {
-                           if (item.size_elements !== null) {
+               return tempType === givenType && tempLength === givenLength
+            })
 
-                              // console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
-                              const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
-                              console.log('ele', ele)
-                              if (ele === -1) {
-                                 const sizesReturned = {
-                                    id: item.item.id,
-                                    error: 'Size not available, wanna checkout other sizes'
-                                 }
-                                 cartSizes.push(sizesReturned)
-                              }
-                           } else {
-                              const sizesReturned = {
-                                 id: item.item.id,
-                                 error: 'All sizes are out of stock'
-                              }
-                              cartSizes.push(sizesReturned)
-                           }
-                        }
-                     } else {
-                        let id = 0
-                        for (let temp of parsedSize) {
-                           id = temp.id
-                           break
-                        }
+            if (firstMatch.length) {
+               for (let item of firstMatch) {
+                  if (item.size_elements !== null) {
+
+                     // console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
+                     const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
+                     console.log('ele', ele)
+                     if (ele === -1) {
                         const sizesReturned = {
-                           id: id,
-                           error: 'No size available'
+                           id: item.item.id,
+                           error: 'Size not available, wanna checkout other sizes'
                         }
                         cartSizes.push(sizesReturned)
                      }
-
                   } else {
-                     console.log('no data returned from the scrapper')
+                     const sizesReturned = {
+                        id: item.item.id,
+                        error: 'All sizes are out of stock'
+                     }
+                     cartSizes.push(sizesReturned)
                   }
-                  // appIO.socket.emit('sizeScrapper', result);
-               } else {
-                  console.log('in else result', result)
-                  const temp = {}
-                  temp.response = result
-                  temp.id = varItem.id
-                  // appIO.socket.emit('sizeScrapper', [temp]);
                }
             } else {
-               console.log('in else result', result)
-               const temp = {}
-               temp.response = "Variation does not have link"
-               temp.id = varItem.id
-               cartSizes.push(temp)
+               let id = 0
+               for (let temp of parsedSize) {
+                  id = temp.id
+                  break
+               }
+               const sizesReturned = {
+                  id: id,
+                  error: 'No size available'
+               }
+               cartSizes.push(sizesReturned)
             }
-            num++
+
+         } else {
+            console.log('no data returned from the scrapper')
          }
-         count++
+         // appIO.socket.emit('sizeScrapper', result);
+      } else {
+         console.log('in else result', result)
+         const temp = {}
+         temp.response = result
+         temp.id = varItem.id
+         // appIO.socket.emit('sizeScrapper', [temp]);
       }
+
 
       pusher.trigger("my-channel", "my-event", {
          message: { cartSizes: cartSizes, userId: payload.userId }
