@@ -77,103 +77,113 @@ io.on('connection', socket => {
       console.log('======== real data recieved =======')
 
       // console.log('payload', payload)
-      // let cartSizes = [];
-      // let appResult = []
-      // let index = 0;
+      let cartSizes = [];
+      let appResult = []
+      let index = 0;
+/**
+ * {
+  link: {
+    size: [ null, null, 'XXL' ],
+    id: 13759,
+    quantity: '1',
+    link: 'https://www2.hm.com/en_us/productpage.1155757001.html',
+    userId: 26
+  }
+}
+ */
+
+      const result = await sizeScrapper(data.link.link, data.link.userId)
+      console.log('result', result)
+      if (result.parsedData) {
+         for (let item of result.parsedData) {
+            item.item = payload
+            item.id = payload.id
+         }
 
 
-      // const result = await sizeScrapper(payload.link, payload.userId)
-      // console.log('result', result)
-      // if (result.parsedData) {
-      //    for (let item of result.parsedData) {
-      //       item.item = payload
-      //       item.id = payload.id
-      //    }
+         const parsedSize = result.parsedData
+         if (parsedSize.length) {
+            let tempID = null
+            const temp = parsedSize.map(ps => {
+               if (tempID !== ps.id) {
+                  tempID = ps.id
+               }
+               const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+               return { ...ps, size_elements: sample }
+            })
+            // console.log('tempID before emitting ==>', tempID)
+            // console.log('temp before emitting ==>', temp)
+            // appResult.push({id:tempID, data: temp})
+
+            // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
+            // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
+            // await deleteGeneratedFile(stdout)
+
+            const firstMatch = parsedSize.filter(size => {
+
+               const tempType = size.type !== null ? size.type.toLowerCase() : size.type
+               const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
+
+               const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
+               const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
+
+               return tempType === givenType && tempLength === givenLength
+            })
+
+            if (firstMatch.length) {
+               for (let item of firstMatch) {
+                  if (item.size_elements !== null) {
+
+                     // console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
+                     const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
+                     console.log('ele', ele)
+                     if (ele === -1) {
+                        const sizesReturned = {
+                           id: item.item.id,
+                           error: 'Size not available, wanna checkout other sizes'
+                        }
+                        cartSizes.push(sizesReturned)
+                     }
+                  } else {
+                     const sizesReturned = {
+                        id: item.item.id,
+                        error: 'All sizes are out of stock'
+                     }
+                     cartSizes.push(sizesReturned)
+                  }
+               }
+            } else {
+               let id = 0
+               for (let temp of parsedSize) {
+                  id = temp.id
+                  break
+               }
+               const sizesReturned = {
+                  id: id,
+                  error: 'No size available'
+               }
+               cartSizes.push(sizesReturned)
+            }
+
+         } else {
+            console.log('no data returned from the scrapper')
+         }
+         // appIO.socket.emit('sizeScrapper', result);
+      } else {
+         console.log('in else result', result.parsedData)
+         const temp = {}
+         temp.response = result.parsedData
+         temp.id = varItem.id
+         // appIO.socket.emit('sizeScrapper', [temp]);
+      }
 
 
-      //    const parsedSize = result.parsedData
-      //    if (parsedSize.length) {
-      //       let tempID = null
-      //       const temp = parsedSize.map(ps => {
-      //          if (tempID !== ps.id) {
-      //             tempID = ps.id
-      //          }
-      //          const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
-      //          return { ...ps, size_elements: sample }
-      //       })
-      //       // console.log('tempID before emitting ==>', tempID)
-      //       // console.log('temp before emitting ==>', temp)
-      //       // appResult.push({id:tempID, data: temp})
-
-      //       // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
-      //       // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
-      //       // await deleteGeneratedFile(stdout)
-
-      //       const firstMatch = parsedSize.filter(size => {
-
-      //          const tempType = size.type !== null ? size.type.toLowerCase() : size.type
-      //          const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
-
-      //          const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
-      //          const givenLength = size.item.size[1] !== null ? size.item.size[1].toLowerCase() : size.item.size[1]
-
-      //          return tempType === givenType && tempLength === givenLength
-      //       })
-
-      //       if (firstMatch.length) {
-      //          for (let item of firstMatch) {
-      //             if (item.size_elements !== null) {
-
-      //                // console.log('item.item.size 1=======>', JSON.stringify(item.item.size))
-      //                const ele = item.size_elements.findIndex(sizeItem => sizeItem.toLowerCase() == item.item.size[2].toLowerCase())
-      //                console.log('ele', ele)
-      //                if (ele === -1) {
-      //                   const sizesReturned = {
-      //                      id: item.item.id,
-      //                      error: 'Size not available, wanna checkout other sizes'
-      //                   }
-      //                   cartSizes.push(sizesReturned)
-      //                }
-      //             } else {
-      //                const sizesReturned = {
-      //                   id: item.item.id,
-      //                   error: 'All sizes are out of stock'
-      //                }
-      //                cartSizes.push(sizesReturned)
-      //             }
-      //          }
-      //       } else {
-      //          let id = 0
-      //          for (let temp of parsedSize) {
-      //             id = temp.id
-      //             break
-      //          }
-      //          const sizesReturned = {
-      //             id: id,
-      //             error: 'No size available'
-      //          }
-      //          cartSizes.push(sizesReturned)
-      //       }
-
-      //    } else {
-      //       console.log('no data returned from the scrapper')
-      //    }
-      //    // appIO.socket.emit('sizeScrapper', result);
-      // } else {
-      //    console.log('in else result', result.parsedData)
-      //    const temp = {}
-      //    temp.response = result.parsedData
-      //    temp.id = varItem.id
-      //    // appIO.socket.emit('sizeScrapper', [temp]);
-      // }
-
-
-      // pusher.trigger("my-channel", "my-event", {
-      //    message: { cartSizes: cartSizes, userId: payload.userId }
-      // });
-      // console.log(`emitted ============= `, { cartSizes: cartSizes, userId: payload.userId });
-      // sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: payload.userId });
-      // cartSizes = [];
+      pusher.trigger("my-channel", "my-event", {
+         message: { cartSizes: cartSizes, userId: payload.userId }
+      });
+      console.log(`emitted ============= `, { cartSizes: cartSizes, userId: payload.userId });
+      sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: payload.userId });
+      cartSizes = [];
    })
 
 
