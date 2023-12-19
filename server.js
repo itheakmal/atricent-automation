@@ -359,7 +359,7 @@ app.post('/test', async (req, res) => {
 })
 app.post('/size-scrapper', async (req, res) => {
    const data = req.body
-   console.log('data', data)
+   console.log('data', JSON.parse(data.toString()))
    try {
 
       const result = await sizeScrapper(data.link)
