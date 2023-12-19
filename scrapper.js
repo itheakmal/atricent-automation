@@ -66,7 +66,7 @@ const deleteGeneratedFile = async (filePath) => {
     const fs = require('fs').promises
     console.log('filePath', filePath)
     try {
-        await fs.unlink(filePath);
+        await fs.unlink('/'+filePath);
         console.log(`File ${filePath} has been deleted.`);
     } catch (error) {
         console.error(`Error deleting file ${filePath}:`, error);

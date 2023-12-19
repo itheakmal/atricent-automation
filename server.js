@@ -346,6 +346,17 @@ io.on('connection', socket => {
 //    // (note that there is no callback argument to the `.disconnect` method)
 //  });
 // 
+app.post('/test', async (req, res) => {
+   const data = req.body
+   console.log('data', data)
+   try {
+
+      const result = await deleteGeneratedFile(data.path)
+      res.json(result);
+   } catch (error) {
+      console.log(error)
+   }
+})
 app.post('/size-scrapper', async (req, res) => {
    const data = req.body
    console.log('data', data)
