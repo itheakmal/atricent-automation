@@ -71,19 +71,19 @@ const deleteGeneratedFile = async (filePaths) => {
         console.log(`filePath ${filePath}`);
         await fs.unlink(filePath);
         console.log(`File ${filePath} has been deleted.`);
-      } catch (error) {
+    } catch (error) {
         if (error.code === 'ENOENT') {
-          console.error(`File not found: ${filePaths}`);
+            console.error(`File not found: ${filePaths}`);
         } else {
-          console.error(`Error deleting file ${filePaths}:`, error);
+            console.error(`Error deleting file ${filePaths}:`, error);
         }
-      }
+    }
 }
 
-const readFile = async (file, id) => {
+const readFile = async (filed, id) => {
     const fs = require('fs').promises
-    const filed = file.trim()
-    console.log('file', filed)
+    // const filed = file.trim()
+    // console.log('file', filed)
     try {
         const data = await fs.readFile(`./${filed}`, 'utf-8')
         const parsedData = JSON.parse(data)
@@ -132,8 +132,10 @@ exports.sizeScrapper = (link, id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { stdout, stderr } = await runScrapper(link)
-            const size = await readFile(stdout, id)
-            await deleteGeneratedFile(stdout)
+            const filed = stdout.trim()
+            console.log('filed', filed)
+            const size = await readFile(filed, id)
+            await deleteGeneratedFile(filed)
             resolve(size)
         } catch (error) {
             reject(error)
