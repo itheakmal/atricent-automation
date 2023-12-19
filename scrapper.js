@@ -62,7 +62,7 @@ exports.runOrderScrapper = async (address, scrapper, filedName) => {
 
     })
 }
-const deleteGeneratedFile = async (filePath) => {
+exports.deleteGeneratedFile = async (filePath) => {
     const fs = require('fs').promises
     console.log('filePath', filePath)
     try {
