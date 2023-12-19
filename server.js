@@ -90,11 +90,7 @@ io.on('connection', socket => {
 
       if (result.parsedData) {
          const parsedSize = result.parsedData
-         for (let i = 0; i < result.parsedData.length; i++) {
-            result.parsedData[i]["item"] = data.link;
-            result.parsedData[i]["id"] = data.link.id;
-            // console.log('result.parsedData[i]["item"]id===', result.parsedData[i]["item"]);
-         }
+         
 
 
          if (parsedSize.length) {
@@ -113,7 +109,10 @@ io.on('connection', socket => {
             appIO.socket.emit('sizeUpdate', { data: temp, id: tempID })
             // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
             // await deleteGeneratedFile(stdout)
-
+            for (let i = 0; i < parsedSize.length; i++) {
+               parsedSize[i]["item"] = data.link;
+               parsedSize[i]["id"] = data.link.id;
+            }
             const firstMatch = parsedSize.filter(size => {
                const tempType = size.type !== null ? size.type.toLowerCase() : size.type
                const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
