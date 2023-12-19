@@ -90,24 +90,45 @@ io.on('connection', socket => {
     userId: 26
   }
 }
+====================================== idher se kam shuru krna hai ============================================================================
+file size20231219_081135.json
+result {
+  parsedData: [ { type: null, length: null, size_elements: null } ],
+  sizeUpdate: { data: [ [Object] ], id: 26 }
+}
+/var/www/atricent-automation/server.js:99
+            item.item = payload
+                        ^
+
+ReferenceError: payload is not defined
+    at Socket.<anonymous> (/var/www/atricent-automation/server.js:99:25)
+
+Node.js v20.10.0
+sizeUpdate:
  */
 
       const result = await sizeScrapper(data.link.link, data.link.userId)
       console.log('result', result)
+
+      for (let item of result.sizeUpdate) {
+         console.log('item==>', item)
+      }
+
+
       if (result.parsedData) {
-         for (let item of result.parsedData) {
-            item.item = payload
-            item.id = payload.id
-         }
+         // for (let item of result.parsedData) {
+         //    item.item = payload
+         //    item.id = payload.id
+         // }
 
 
          const parsedSize = result.parsedData
          if (parsedSize.length) {
             let tempID = null
             const temp = parsedSize.map(ps => {
-               if (tempID !== ps.id) {
-                  tempID = ps.id
-               }
+               // if (tempID !== ps.id) {
+               //    tempID = ps.id
+               // }
                const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
                return { ...ps, size_elements: sample }
             })
