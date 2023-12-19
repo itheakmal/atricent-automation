@@ -62,6 +62,16 @@ exports.runOrderScrapper = async (address, scrapper, filedName) => {
 
     })
 }
+const deleteGeneratedFile = async (filePath) => {
+    const fs = require('fs').promises
+    console.log('filePath', filePath)
+    try {
+        await fs.unlink(filePath);
+        console.log(`File ${filePath} has been deleted.`);
+    } catch (error) {
+        console.error(`Error deleting file ${filePath}:`, error);
+    }
+}
 
 const readFile = async (file, id) => {
     const fs = require('fs').promises
@@ -72,13 +82,13 @@ const readFile = async (file, id) => {
         const parsedData = JSON.parse(data)
         // console.log('readFile data: ', parsedData)
         const temp = parsedData.map(ps => {
-            
+
             const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
             return { ...ps, size_elements: sample }
-         })
+        })
         //  console.log('num, count, index', num, count, index)
         // io.emit('sizeUpdate', {data: temp, id: id})
-        return ({parsedData, sizeUpdate: {data: temp, id: id}})
+        return ({ parsedData, sizeUpdate: { data: temp, id: id } })
     } catch (error) {
         throw error
     }
