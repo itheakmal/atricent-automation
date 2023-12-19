@@ -64,13 +64,26 @@ exports.runOrderScrapper = async (address, scrapper, filedName) => {
 }
 exports.deleteGeneratedFile = async (filePath) => {
     const fs = require('fs').promises
+    const path = require('path');
     console.log('filePath', filePath)
+    // try {
+    //     await fs.unlink('/'+filePath);
+    //     console.log(`File ${filePath} has been deleted.`);
+    // } catch (error) {
+    //     console.error(`Error deleting file ${filePath}:`, error);
+    // }
     try {
-        await fs.unlink('/'+filePath);
+        const filePath = path.resolve(__dirname, fileName); // Assuming the file is in the same directory as this script
+        console.log(`filePath ${filePath}`);
+        await fs.unlink(filePath);
         console.log(`File ${filePath} has been deleted.`);
-    } catch (error) {
-        console.error(`Error deleting file ${filePath}:`, error);
-    }
+      } catch (error) {
+        if (error.code === 'ENOENT') {
+          console.error(`File not found: ${fileName}`);
+        } else {
+          console.error(`Error deleting file ${fileName}:`, error);
+        }
+      }
 }
 
 const readFile = async (file, id) => {
