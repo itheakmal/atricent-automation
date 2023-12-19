@@ -62,16 +62,10 @@ exports.runOrderScrapper = async (address, scrapper, filedName) => {
 
     })
 }
-exports.deleteGeneratedFile = async (filePaths) => {
+const deleteGeneratedFile = async (filePaths) => {
     const fs = require('fs').promises
     const path = require('path');
     console.log('filePath', filePaths)
-    // try {
-    //     await fs.unlink('/'+filePath);
-    //     console.log(`File ${filePath} has been deleted.`);
-    // } catch (error) {
-    //     console.error(`Error deleting file ${filePath}:`, error);
-    // }
     try {
         const filePath = path.resolve(__dirname, filePaths); // Assuming the file is in the same directory as this script
         console.log(`filePath ${filePath}`);
@@ -139,7 +133,7 @@ exports.sizeScrapper = (link, id) => {
         try {
             const { stdout, stderr } = await runScrapper(link)
             const size = await readFile(stdout, id)
-            await scrapper.deleteGeneratedFile(stdout)
+            await deleteGeneratedFile(stdout)
             resolve(size)
         } catch (error) {
             reject(error)

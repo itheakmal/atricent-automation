@@ -3,7 +3,7 @@ var app = express();
 // require('dotenv').config();
 
 const cors = require('cors')
-const { sizeScrapper, orderScrapper, runOrderScrapper, readOrderFile, deleteGeneratedFile } = require('./scrapper')
+const { sizeScrapper, orderScrapper, runOrderScrapper, readOrderFile } = require('./scrapper')
 const { cronJob } = require('./app/cronJob');
 const bodyParser = require('body-parser');
 app.use(bodyParser.raw({ type: '*/*' }));
@@ -351,7 +351,7 @@ app.post('/test', async (req, res) => {
    console.log('data', data)
    try {
 
-      const result = await deleteGeneratedFile(data.path)
+      // const result = await deleteGeneratedFile(data.path)
       res.json(result);
    } catch (error) {
       console.log(error)
