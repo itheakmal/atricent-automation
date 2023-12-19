@@ -80,46 +80,6 @@ io.on('connection', socket => {
       let cartSizes = [];
       let appResult = []
       let index = 0;
-/**
- * 
- * ======== real data recieved =======
-{
-  link: {
-    size: [ null, null, 'XXL' ],
-    id: 13759,
-    quantity: '1',
-    link: 'https://www2.hm.com/en_us/productpage.1155757001.html',
-    userId: 26
-  }
-}
-======== real data recieved =======
- * 
- * {
-  link: {
-    size: [ null, null, 'XXL' ],
-    id: 13759,
-    quantity: '1',
-    link: 'https://www2.hm.com/en_us/productpage.1155757001.html',
-    userId: 26
-  }
-}
-====================================== idher se kam shuru krna hai ============================================================================
-file size20231219_081135.json
-result {
-  parsedData: [ { type: null, length: null, size_elements: null } ],
-  sizeUpdate: { data: [ [Object] ], id: 26 }
-}
-/var/www/atricent-automation/server.js:99
-            item.item = payload
-                        ^
-
-ReferenceError: payload is not defined
-    at Socket.<anonymous> (/var/www/atricent-automation/server.js:99:25)
-
-Node.js v20.10.0
-sizeUpdate:
- */
-
       const result = await sizeScrapper(data.link.link, data.link.userId)
       console.log('result', result)
 
@@ -132,17 +92,17 @@ sizeUpdate:
          for (let i = 0; i < result.parsedData.length; i++) {
 		   result.parsedData[i]["item"] = data.link;
 		   result.parsedData[i]["id"] = data.link.id;
-		   console.log('result.parsedData[i]["item"]id===', result.parsedData[i]["item"]);
+		   // console.log('result.parsedData[i]["item"]id===', result.parsedData[i]["item"]);
 		}
 
-console.log('asdf===', result.parsedData[0]["item"])
+
          const parsedSize = result.parsedData
          if (parsedSize.length) {
             let tempID = null
             const temp = parsedSize.map(ps => {
-               // if (tempID !== ps.id) {
-               //    tempID = ps.id
-               // }
+               if (tempID !== ps.id) {
+                  tempID = ps.id
+               }
                const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
                return { ...ps, size_elements: sample }
             })
@@ -150,12 +110,11 @@ console.log('asdf===', result.parsedData[0]["item"])
             // console.log('temp before emitting ==>', temp)
             // appResult.push({id:tempID, data: temp})
 
-            // appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
+            appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
             // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
             // await deleteGeneratedFile(stdout)
 
             const firstMatch = parsedSize.filter(size => {
-console.log('size.item', size.item)
                const tempType = size.type !== null ? size.type.toLowerCase() : size.type
                const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
 
@@ -164,19 +123,7 @@ console.log('size.item', size.item)
 
                return tempType === givenType && tempLength === givenLength
             })
-/**
- * item==> { type: null, length: null, size_elements: null }
-/var/www/atricent-automation/server.js:148
-               const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
-                                           ^
 
-TypeError: Cannot read properties of undefined (reading 'size')
-    at /var/www/atricent-automation/server.js:148:44
-    at Array.filter (<anonymous>)
-    at Socket.<anonymous> (/var/www/atricent-automation/server.js:143:43)
-
-Node.js v20.10.0
- */
             if (firstMatch.length) {
                for (let item of firstMatch) {
                   if (item.size_elements !== null) {
