@@ -73,9 +73,9 @@ const deleteGeneratedFile = async (filePaths) => {
         console.log(`File ${filePath} has been deleted.`);
       } catch (error) {
         if (error.code === 'ENOENT') {
-          console.error(`File not found: ${fileName}`);
+          console.error(`File not found: ${filePaths}`);
         } else {
-          console.error(`Error deleting file ${fileName}:`, error);
+          console.error(`Error deleting file ${filePaths}:`, error);
         }
       }
 }
