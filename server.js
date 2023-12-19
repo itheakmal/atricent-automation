@@ -81,6 +81,19 @@ io.on('connection', socket => {
       let appResult = []
       let index = 0;
 /**
+ * 
+ * ======== real data recieved =======
+{
+  link: {
+    size: [ null, null, 'XXL' ],
+    id: 13759,
+    quantity: '1',
+    link: 'https://www2.hm.com/en_us/productpage.1155757001.html',
+    userId: 26
+  }
+}
+======== real data recieved =======
+ * 
  * {
   link: {
     size: [ null, null, 'XXL' ],
@@ -116,10 +129,10 @@ sizeUpdate:
 
 
       if (result.parsedData) {
-         // for (let item of result.parsedData) {
-         //    item.item = payload
-         //    item.id = payload.id
-         // }
+         for (let item of result.parsedData) {
+            item.item = result.parsedData
+            item.id = result.sizeUpdate.id
+         }
 
 
          const parsedSize = result.parsedData
@@ -150,7 +163,19 @@ sizeUpdate:
 
                return tempType === givenType && tempLength === givenLength
             })
+/**
+ * item==> { type: null, length: null, size_elements: null }
+/var/www/atricent-automation/server.js:148
+               const givenType = size.item.size[0] !== null ? size.item.size[0].toLowerCase() : size.item.size[0]
+                                           ^
 
+TypeError: Cannot read properties of undefined (reading 'size')
+    at /var/www/atricent-automation/server.js:148:44
+    at Array.filter (<anonymous>)
+    at Socket.<anonymous> (/var/www/atricent-automation/server.js:143:43)
+
+Node.js v20.10.0
+ */
             if (firstMatch.length) {
                for (let item of firstMatch) {
                   if (item.size_elements !== null) {
