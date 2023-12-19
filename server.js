@@ -175,9 +175,9 @@ io.on('connection', socket => {
       pusher.trigger("my-channel", "my-event", {
          message: { cartSizes: cartSizes, userId: data.link.id }
       });
-      console.log(`emitted ============= `, { cartSizes: cartSizes, userId: data.link.id });
+      console.log(`emitted ============= `, { cartSizes: cartSizes, userId: data.link.userId });
       //sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.id });
-	  appIO.socket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.id });
+	  appIO.socket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.userId });
       cartSizes = [];
    })
 
