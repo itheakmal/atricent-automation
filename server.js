@@ -89,14 +89,14 @@ io.on('connection', socket => {
 
 
       if (result.parsedData) {
-         for (let i = 0; i < result.parsedData.length; i++) {
-		   result.parsedData[i]["item"] = data.link;
-		   result.parsedData[i]["id"] = data.link.id;
-		   // console.log('result.parsedData[i]["item"]id===', result.parsedData[i]["item"]);
-		}
-
-
          const parsedSize = result.parsedData
+         for (let i = 0; i < result.parsedData.length; i++) {
+            result.parsedData[i]["item"] = data.link;
+            result.parsedData[i]["id"] = data.link.id;
+            // console.log('result.parsedData[i]["item"]id===', result.parsedData[i]["item"]);
+         }
+
+
          if (parsedSize.length) {
             let tempID = null
             const temp = parsedSize.map(ps => {
@@ -110,7 +110,7 @@ io.on('connection', socket => {
             // console.log('temp before emitting ==>', temp)
             // appResult.push({id:tempID, data: temp})
 
-            appIO.socket.emit('sizeUpdate', {data: temp, id: tempID})
+            appIO.socket.emit('sizeUpdate', { data: temp, id: tempID })
             // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
             // await deleteGeneratedFile(stdout)
 
@@ -177,7 +177,7 @@ io.on('connection', socket => {
       });
       console.log(`emitted ============= `, { cartSizes: cartSizes, userId: data.link.userId });
       //sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.id });
-	  appIO.socket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.userId });
+      appIO.socket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.userId });
       cartSizes = [];
    })
 
