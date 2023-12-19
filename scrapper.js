@@ -139,7 +139,7 @@ exports.sizeScrapper = (link, id) => {
         try {
             const { stdout, stderr } = await runScrapper(link)
             const size = await readFile(stdout, id)
-            await deleteGeneratedFile(stdout)
+            await scrapper.deleteGeneratedFile(stdout)
             resolve(size)
         } catch (error) {
             reject(error)
