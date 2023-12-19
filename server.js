@@ -110,7 +110,7 @@ sizeUpdate:
       const result = await sizeScrapper(data.link.link, data.link.userId)
       console.log('result', result)
 
-      for (let item of result.sizeUpdate) {
+      for (let item of result.sizeUpdate.data) {
          console.log('item==>', item)
       }
 
