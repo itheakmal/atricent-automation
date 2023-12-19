@@ -129,12 +129,13 @@ sizeUpdate:
 
 
       if (result.parsedData) {
-         for (let item of result.parsedData) {
-            item.item = result.parsedData
-            item.id = result.sizeUpdate.id
-         }
+         for (let i = 0; i < result.parsedData.length; i++) {
+		   result.parsedData[i]["item"] = data.link;
+		   result.parsedData[i]["id"] = data.link.id;
+		   console.log('result.parsedData[i]["item"]id===', result.parsedData[i]["item"]);
+		}
 
-
+console.log('asdf===', result.parsedData[0]["item"])
          const parsedSize = result.parsedData
          if (parsedSize.length) {
             let tempID = null
@@ -154,7 +155,7 @@ sizeUpdate:
             // await deleteGeneratedFile(stdout)
 
             const firstMatch = parsedSize.filter(size => {
-
+console.log('size.item', size.item)
                const tempType = size.type !== null ? size.type.toLowerCase() : size.type
                const tempLength = size.length !== null ? size.length.toLowerCase() : size.length
 
@@ -225,10 +226,11 @@ Node.js v20.10.0
 
 
       pusher.trigger("my-channel", "my-event", {
-         message: { cartSizes: cartSizes, userId: payload.userId }
+         message: { cartSizes: cartSizes, userId: data.link.id }
       });
-      console.log(`emitted ============= `, { cartSizes: cartSizes, userId: payload.userId });
-      sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: payload.userId });
+      console.log(`emitted ============= `, { cartSizes: cartSizes, userId: data.link.id });
+      //sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.id });
+	  appIO.socket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.id });
       cartSizes = [];
    })
 
