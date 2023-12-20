@@ -48,8 +48,9 @@ console.log('appIO.socket:', appIO.socket);
 io.on('connection', socket => {
    console.log('connected:', socket.client.id);
    appIO.socket = socket;
-   // 
+   //  
    appIO.socket.on('orderScrapper', async function (data) {
+      console.log('data', data)
       const momentFileName = moment().format('HHmmssSS')
       const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
       try {
