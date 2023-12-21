@@ -32,7 +32,7 @@ exports.runOrderScrapper = async (address, scrapper, filedName) => {
             const exec = require('child_process').exec;
             const fs = require('fs');
             // const moment = require('moment')
-
+            console.log('address, scrapper, filedName', address, scrapper, filedName)
             const jsonString = JSON.stringify(address, null, 2);
             const path = __dirname;
             // const momentFileName = moment().format('HHmmssSS')
