@@ -140,7 +140,7 @@ exports.sizeScrapper = (link, id) => {
             const filed = stdout.trim()
             console.log('filed', filed)
             const size = await readFile(filed, id)
-            await deleteGeneratedFile(filed)
+            // await deleteGeneratedFile(filed)
             resolve(size)
         } catch (error) {
             reject(error)
