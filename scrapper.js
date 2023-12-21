@@ -26,13 +26,14 @@ const runScrapper = async (link) => {
 
     })
 }
-exports.runOrderScrapper = async (address, scrapper, filedName) => {
+exports.runOrderScrapper = async (address, orderID, scrapper, filedName) => {
     return new Promise((resolve, reject) => {
         try {
             const exec = require('child_process').exec;
             const fs = require('fs');
             // const moment = require('moment')
-            console.log('address, scrapper, filedName', address, scrapper, filedName)
+            console.log('address, orderID, scrapper, filedName', address, orderID, scrapper, filedName)
+            address["orderDetailID"] = orderID
             const jsonString = JSON.stringify(address, null, 2);
             const path = __dirname;
             // const momentFileName = moment().format('HHmmssSS')
