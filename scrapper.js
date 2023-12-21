@@ -152,6 +152,7 @@ exports.orderScrapper = (data, file, socket) => {
         try {
             const moment = require('moment')
             const momentFileName = moment().format('HHmmssSS')
+            console.log('data.cartItem, data.scrapper, momentFileName', data.cartItem, data.scrapper, momentFileName)
             appIO.socket.on('orderScrapper', function (data) {
                 const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
                 asyncTask.then((data) => {
