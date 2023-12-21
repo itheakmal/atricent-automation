@@ -52,7 +52,7 @@ io.on('connection', socket => {
    appIO.socket.on('orderScrapper', async function (data) {
       console.log('data', data)
       const momentFileName = moment().format('HHmmssSS')
-      const asyncTask = runOrderScrapper(data.cartItem, data.scrapper, momentFileName)
+      const asyncTask = runOrderScrapper(data.cartItem.cartItem, data.cartItem.scrapper, momentFileName)
       try {
          const data = await asyncTask;
          console.log('Async task has completed', data);
