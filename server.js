@@ -106,7 +106,7 @@ io.on('connection', socket => {
             // console.log('tempID before emitting ==>', tempID)
             // console.log('temp before emitting ==>', temp)
             // appResult.push({id:tempID, data: temp})
-
+console.log('{ data: temp, id: tempID }', { data: temp, id: tempID })
             appIO.socket.emit('sizeUpdate', { data: temp, id: tempID })
             // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
             // await deleteGeneratedFile(stdout)
