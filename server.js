@@ -116,8 +116,8 @@ io.on('connection', socket => {
    appIO.socket = socket;
    //  
    appIO.socket.on('orderScrapper', async function (data) {
-      console.log('data', data)
-      console.log('data.scrapper', data.scrapper)
+      console.log('on orderScrapper data===========>', data)
+      console.log('on orderScrapper data.scrapper==========>', data.scrapper)
       let tempScrapName = null;
       if (data.scrapperName === 'h&m_order_place') {
          tempScrapName = 'hm_order_place'
