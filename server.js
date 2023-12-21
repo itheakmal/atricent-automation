@@ -40,9 +40,75 @@ const pusher = new Pusher({
 // app.use(cors(corsOptions))
 app.use(express.json())
 
+/**
+ * 
+data {
+  cartItem: {
+    cartItem: {
+      brand: 7,
+      tax: 0,
+      fee: 5.99,
+      shippingMethod: [Object],
+      paymentMethod: [Object],
+      variations: [Array],
+      orderDetailID: 359,
+      brandName: 'H&M',
+      address: [Object]
+    },
+    orderIDS: '188',
+    scrapperName: 'h&m_order_place'
+  }
+}
+address, scrapper, filedName {
+  brand: 7,
+  tax: 0,
+  fee: 5.99,
+  shippingMethod: {
+    fee: 5.99,
+    time: '3-5 Business Days',
+    title: 'Standard Shipping',
+    atFee: 3.2299999999999995
+  },
+  paymentMethod: { name: 'stripe' },
+  variations: [
+    {
+      id: 81694,
+      size: [Array],
+      quantity: '1',
+      price: 32.3,
+      status: 'active',
+      link: 'https://www2.hm.com/en_us/productpage.1168319001.html'
+    }
+  ],
+  orderDetailID: 359,
+  brandName: 'H&M',
+  address: {
+    name: 'Fk',
+    firstName: 'Mian',
+    lastName: 'Ali',
+    address: '680 Amboy Ave',
+    city: 'Woodbridge',
+    state: 'New Jersey',
+    zip: '07095',
+    phone: '17324051053'
+  }
+} undefined 10101060
+filename order10101060.json
+Async task encountered an error: Error: Command failed: python3 /var/www/atricent-automation/scrappers/undefined.py order10101060.json
+python3: can't open file '/var/www/atricent-automation/scrappers/undefined.py': [Errno 2] No such file or directory
 
-// const { exportSQL } = require("./exportSQL");
-// const moment = require("moment")
+    at ChildProcess.exithandler (node:child_process:422:12)
+    at ChildProcess.emit (node:events:514:28)
+    at maybeClose (node:internal/child_process:1105:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:305:5) {
+  code: 2,
+  killed: false,
+  signal: null,
+  cmd: 'python3 /var/www/atricent-automation/scrappers/undefined.py order10101060.json'
+}
+connected: 4CqxiPVgtti7uNNWAAAE
+ */
+
 const appIO = { socket: null };
 console.log('appIO.socket:', appIO.socket);
 io.on('connection', socket => {
@@ -52,7 +118,7 @@ io.on('connection', socket => {
    appIO.socket.on('orderScrapper', async function (data) {
       console.log('data', data)
       const momentFileName = moment().format('HHmmssSS')
-      const asyncTask = runOrderScrapper(data.cartItem.cartItem, data.cartItem.scrapper, momentFileName)
+      const asyncTask = runOrderScrapper(data.cartItem.cartItem, data.cartItem.scrapperName, momentFileName)
       try {
          const data = await asyncTask;
          console.log('Async task has completed', data);
