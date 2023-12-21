@@ -168,6 +168,7 @@ io.on('connection', socket => {
          const temp = {}
          temp.response = result.parsedData
          temp.id = varItem.id
+         cartSizes.push(temp)
          // appIO.socket.emit('sizeScrapper', [temp]);
       }
 

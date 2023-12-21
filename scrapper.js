@@ -88,14 +88,19 @@ const readFile = async (filed, id) => {
         const data = await fs.readFile(`./${filed}`, 'utf-8')
         const parsedData = JSON.parse(data)
         console.log('readFile data: ', parsedData)
-        const temp = parsedData.map(ps => {
+        if (parsedData) {
 
-            const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
-            return { ...ps, size_elements: sample }
-        })
+            const temp = parsedData.map(ps => {
+    
+                const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
+                return { ...ps, size_elements: sample }
+            })
+            return ({ parsedData, sizeUpdate: { data: temp, id: id } })
+        } else {
+            return ({parsedData: null, sizeUpdate: { }})
+        }
         //  console.log('num, count, index', num, count, index)
         // io.emit('sizeUpdate', {data: temp, id: id})
-        return ({ parsedData, sizeUpdate: { data: temp, id: id } })
     } catch (error) {
         throw error
     }
