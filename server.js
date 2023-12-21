@@ -117,11 +117,12 @@ io.on('connection', socket => {
    //  
    appIO.socket.on('orderScrapper', async function (data) {
       console.log('data', data)
+      console.log('data.scrapper', data.scrapper)
       let tempScrapName = null;
       if (data.scrapperName === 'h&m_order_place') {
          tempScrapName = 'hm_order_place'
       } else {
-         tempScrapName = data.scrapperName
+         tempScrapName = data.scrapper
       }
       const momentFileName = moment().format('HHmmssSS')
       const asyncTask = runOrderScrapper(data.cartItem.address, data.orderIDS, tempScrapName, momentFileName)
