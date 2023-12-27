@@ -42,21 +42,28 @@ app.use(express.json())
 
 /**
  * 
-on orderScrapper data===========> {
+//
+Processing job {"name":"mango","data":{"cartItem":{"brand":2,"tax":0,"fee":0,"shippingMethod":
+{"fee":0,"time":null,"title":"Standard Shipping","atFee":7.598000000000001},
+"paymentMethod":{"name":"stripe"},"variations":[{"id":8132,"size":[null,null,"XL"],"referalId":"5xvrtj9llq57svwv","quantity":"1","price":49.99,"status":"active","link":"https://shop.mango.com/us/men/jeans-skinny/jude-skinny-fit-jeans_57040734.html"},
+{"id":9356,"size":[null,null,"XL"],"quantity":"1","price":25.99,"status":"active","link":"https://shop.mango.com/us/teen/t-shirts-and-tops-long-sleeve/ribbed-long-sleeved-t-shirt_57004030.html?c=99"}],"orderDetailID":381,"brandName":"Mango","address":
+{"name":"Fk","firstName":"Mian","lastName":"Ali","address":"680 Amboy Ave","city":"Woodbridge","state":"New Jersey","zip":"07095","phone":"17324051053"}},"orderIDS":"210","scrapperName":"mango_order_place","detailedIDs":[381],"orderLimits":{"id":210,"uuid":"AT-2312229424-415","brands":[2],"totalAmount":8357,"status":"received","stripeStatus":"charge.succeeded","orders":[381],"details":
+[{"brand":2,"variations":[8132,9356]}],"cartDetails":{"cart":[{"brand":2,"tax":0,"fee":0,"shippingMethod":{"fee":0,"time":null,"title":"Standard Shipping","atFee":7.598000000000001},"paymentMethod":{"name":"stripe"},"variations":[{"id":8132,"size":[null,null,"XL"],"referalId":"5xvrtj9llq57svwv","quantity":"1","price":49.99,"status":"active"},{"id":9356,"size":[null,null,"XL"],"quantity":"1","price":25.99,"status":"active"}],"orderDetailID":381}],"address":{"id":34,"city":"Woodbridge","state":"New Jersey","country":"United States","address":"680 Amboy Ave","zipCode":"07095","firstName":"Mian","lastName":"Ali","phoneNumber":"17324051053","defaultAddress":true,"updatedAt":"2023-12-20T10:18:03.000Z","createdAt":"2023-12-20T10:18:03.000Z","userProfile":6},"user":{"id":26,"active":true,"phoneNo":"3216603846","email":"xotickhan1@gmail.com","otp":null,"otpAt":null,"bearerToken":"1qCZQOyuv6laRf-G01pFlWT9nZOHF8_WDARnn8XSb8XqWj2HJnd-RNNgznezbFTD4NycDBJ4isLfW89kzalAdQOmZn79NbqcoFH-0A6FuLqtfNk97-lFoULLkgPM-1Ydc5qdAQ45mUs1OZExnyDlT4AvbY_Aygk4PwLiTnkc7p4","bearerCreatedAt":"2023-12-21T09:34:36.000Z","updatedAt":"2023-12-21T09:34:36.000Z","createdAt":"2023-10-17T16:01:45.000Z","referralId":"5xvrtj9llq57svkr","profile":{"id":6,"name":"Fk","username":"fky","gender":"female","verified":false,"avatar":null,"dob":"2000-05-04T00:00:00.000Z","skeleton":null,"firebaseToken":"d6sXvcOBQMaWKTWV51pnYD:APA91bGHDMDgAl8Y1QBIHD7YrdlbKLPxwlnxGBE2Ba4CYjvuB23FWQ-PO-71NUH9E1KBwiYohz39770_WmnTimKiGXljydX-fAGM-1iT1SCoyyUR_ph5uQI026HbDAL9SpJF2nI-5y87","notifications":null,"preferences":null,"biography":null,"language":null,"theme":null,"profileVisibility":true,"wardrobeVisibility":false,"feedVisibility":false,"listVisibility":false,"stripeCustomer":{"id":"cus_PDoUuNZGQ6nDva","object":"customer","address":null,"balance":0,"created":1703067503,"currency":null,"default_source":null,"delinquent":false,"description":null,"discount":null,"email":"xotickhan1@gmail.com","invoice_prefix":"9E9F0C04","invoice_settings":{"custom_fields":null,"default_payment_method":null,"footer":null,"rendering_options":null},"livemode":false,"metadata":{"profile":"6"},"name":"Fk","next_invoice_sequence":1,"phone":"3216603846","preferred_locales":[],"shipping":null,"tax_exempt":"none","test_clock":null},"updatedAt":"2023-12-21T09:32:44.000Z","createdAt":"2023-10-17T16:01:45.000Z","auth":26}}},"updatedAt":"2023-12-22T09:42:30.000Z","createdAt":"2023-12-22T09:42:05.000Z","user":26}}}
+varItem {
   cartItem: {
-    brand: 7,
+    brand: 2,
     tax: 0,
-    fee: 5.99,
+    fee: 0,
     shippingMethod: {
-      fee: 5.99,
-      time: '3-5 Business Days',
+      fee: 0,
+      time: null,
       title: 'Standard Shipping',
-      atFee: 3.2299999999999995
+      atFee: 7.598000000000001
     },
     paymentMethod: { name: 'stripe' },
-    variations: [ [Object] ],
-    orderDetailID: 366,
-    brandName: 'H&M',
+    variations: [ [Object], [Object] ],
+    orderDetailID: 381,
+    brandName: 'Mango',
     address: {
       name: 'Fk',
       firstName: 'Mian',
@@ -68,35 +75,136 @@ on orderScrapper data===========> {
       phone: '17324051053'
     }
   },
-  scrapper: 'h&m_order_place',
-  orderIDS: '195'
+  orderIDS: '210',
+  scrapperName: 'mango_order_place',
+  detailedIDs: [ 381 ],
+  orderLimits: {
+    id: 210,
+    uuid: 'AT-2312229424-415',
+    brands: [ 2 ],
+    totalAmount: 8357,
+    status: 'received',
+    stripeStatus: 'charge.succeeded',
+    orders: [ 381 ],
+    details: [ [Object] ],
+    cartDetails: { cart: [Array], address: [Object], user: [Object] },
+    updatedAt: '2023-12-22T09:42:30.000Z',
+    createdAt: '2023-12-22T09:42:05.000Z',
+    user: 26
+  }
 }
-on orderScrapper data.scrapper==========> h&m_order_place
-address, orderID, scrapper, filedName {
-  name: 'Fk',
-  firstName: 'Mian',
-  lastName: 'Ali',
-  address: '680 Amboy Ave',
-  city: 'Woodbridge',
-  state: 'New Jersey',
-  zip: '07095',
-  phone: '17324051053'
-} 195 h&m_order_place 13094417
-filename order13094417.json
-Async task encountered an error: Error: Command failed: python3 /var/www/atricent-automation/scrappers/h&m_order_place.py order13094417.json
-/bin/sh: 1: m_order_place.py: not found
-python3: can't open file '/var/www/atricent-automation/scrappers/h': [Errno 2] No such file or directory
+varItem.scrapperName, varItem.orderIDS mango_order_place 210
+ orderIDS 210
+ scrapper mango_order_place
+cartItem {
+  brand: 2,
+  tax: 0,
+  fee: 0,
+  shippingMethod: {
+    fee: 0,
+    time: null,
+    title: 'Standard Shipping',
+    atFee: 7.598000000000001
+  },
+  paymentMethod: { name: 'stripe' },
+  variations: [
+    {
+      id: 8132,
+      size: [Array],
+      referalId: '5xvrtj9llq57svwv',
+      quantity: '1',
+      price: 49.99,
+      status: 'active',
+      link: 'https://shop.mango.com/us/men/jeans-skinny/jude-skinny-fit-jeans_57040734.html'
+    },
+    {
+      id: 9356,
+      size: [Array],
+      quantity: '1',
+      price: 25.99,
+      status: 'active',
+      link: 'https://shop.mango.com/us/teen/t-shirts-and-tops-long-sleeve/ribbed-long-sleeved-t-shirt_57004030.html?c=99'
+    }
+  ],
+  orderDetailID: 381,
+  brandName: 'Mango',
+  address: {
+    name: 'Fk',
+    firstName: 'Mian',
+    lastName: 'Ali',
+    address: '680 Amboy Ave',
+    city: 'Woodbridge',
+    state: 'New Jersey',
+    zip: '07095',
+    phone: '17324051053'
+  }
+}
+detailedIDs [ 381 ]
+orderLimits {
+  id: 210,
+  uuid: 'AT-2312229424-415',
+  brands: [ 2 ],
+  totalAmount: 8357,
+  status: 'received',
+  stripeStatus: 'charge.succeeded',
+  orders: [ 381 ],
+  details: [ { brand: 2, variations: [Array] } ],
+  cartDetails: {
+    cart: [ [Object] ],
+    address: {
+      id: 34,
+      city: 'Woodbridge',
+      state: 'New Jersey',
+      country: 'United States',
+      address: '680 Amboy Ave',
+      zipCode: '07095',
+      firstName: 'Mian',
+      lastName: 'Ali',
+      phoneNumber: '17324051053',
+      defaultAddress: true,
+      updatedAt: '2023-12-20T10:18:03.000Z',
+      createdAt: '2023-12-20T10:18:03.000Z',
+      userProfile: 6
+    },
+    user: {
+      id: 26,
+      active: true,
+      phoneNo: '3216603846',
+      email: 'xotickhan1@gmail.com',
+      otp: null,
+      otpAt: null,
+      bearerToken: '1qCZQOyuv6laRf-G01pFlWT9nZOHF8_WDARnn8XSb8XqWj2HJnd-RNNgznezbFTD4NycDBJ4isLfW89kzalAdQOmZn79NbqcoFH-0A6FuLqtfNk97-lFoULLkgPM-1Ydc5qdAQ45mUs1OZExnyDlT4AvbY_Aygk4PwLiTnkc7p4',
+      bearerCreatedAt: '2023-12-21T09:34:36.000Z',
+      updatedAt: '2023-12-21T09:34:36.000Z',
+      createdAt: '2023-10-17T16:01:45.000Z',
+      referralId: '5xvrtj9llq57svkr',
+      profile: [Object]
+    }
+  },
+  updatedAt: '2023-12-22T09:42:30.000Z',
+  createdAt: '2023-12-22T09:42:05.000Z',
+  user: 26
+}
+sails.config.globals.socket.id 9jCN73NG9oqvKdHLAAAd
+sails.config.globals.socket.id 9jCN73NG9oqvKdHLAAAd
+_sizes undefined
+data recieved back : error orderscrapper
+/var/www/Atricent/api/services/User.js:134
+    if (resulted.error) {
+                 ^
 
-    at ChildProcess.exithandler (node:child_process:422:12)
-    at ChildProcess.emit (node:events:514:28)
-    at maybeClose (node:internal/child_process:1105:16)
-    at Socket.<anonymous> (node:internal/child_process:457:11)
-    at Socket.emit (node:events:514:28)
-    at Pipe.<anonymous> (node:net:337:12) {
-  code: 127,
-  killed: false,
-  signal: null,
-  cmd: 'python3 /var/www/atricent-automation/scrappers/h&m_order_place.py order13094417.json'
+TypeError: Cannot read properties of undefined (reading 'error')
+    at Socket.<anonymous> (/var/www/Atricent/api/services/User.js:134:18)
+    at Emitter.emit (/var/www/Atricent/node_modules/@socket.io/component-emitter/index.js:143:20)
+    at Socket.emitEvent (/var/www/Atricent/node_modules/socket.io-client/build/cjs/socket.js:519:20)
+    at Socket.onevent (/var/www/Atricent/node_modules/socket.io-client/build/cjs/socket.js:506:18)
+    at Socket.onpacket (/var/www/Atricent/node_modules/socket.io-client/build/cjs/socket.js:474:22)
+    at Emitter.emit (/var/www/Atricent/node_modules/@socket.io/component-emitter/index.js:143:20)
+    at /var/www/Atricent/node_modules/socket.io-client/build/cjs/manager.js:237:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)
+
+Node.js v18.14.1
+root@atricent:/var/www/Atricent#
  */
 
 const appIO = { socket: null };
@@ -122,7 +230,7 @@ io.on('connection', socket => {
          console.log('Async task has completed', data.stdout);
          const newData = data.stdout.trim()
          console.log('Trimmed output', newData);
-         const order = await readOrderFile(newData, io)
+         const order = await readOrderFile(newData)
          console.log('Before emitting order =>', order)
          tempOrder = order
          appIO.socket.emit('orderScrapper', tempOrder);
@@ -453,7 +561,14 @@ app.post('/queue/order-scrapper', async (req, res) => {
    // console.log('data', data)
    try {
 
-
+/**
+ * Trimmed output ,order_20231227_123725.json
+Async task encountered an error: [Error: EISDIR: illegal operation on a directory, read] {
+  errno: -21,
+  code: 'EISDIR',
+  syscall: 'read'
+}
+ */
 
       // appIO.socket.on('orderScrapper', async function (data) {
       const momentFileName = moment().format('HHmmssSS')
