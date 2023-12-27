@@ -110,13 +110,14 @@ const readFile = async (filed, id) => {
 exports.readOrderFile = async (file, io) => {
     const fs = require('fs').promises;
     // const filed = file.replace(/\r\n/g, '');
-    // const filed = file.trim().split(',');
+    const filed = file.trim().split(',');
 
-
+console.log('file', file)
+console.log('filed', filed)
     try {
         // console.log('sails.config.local', sails.config);
         const data = []
-        // for (let file of filed) {
+        for (let file of filed) {
 
         const temp = await fs.readFile(`./${file}`, 'utf-8');
         if (temp !== null) {
@@ -125,7 +126,7 @@ exports.readOrderFile = async (file, io) => {
             data.push(temp)
 
         }
-        // }
+        }
         // this emit is commented
         // io.emit("testOne", data);
         // console.log('User service data', data);
