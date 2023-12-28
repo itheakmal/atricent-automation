@@ -97,11 +97,13 @@ const readFile = async (filed, userid, prodid) => {
                 return { ...ps, size_elements: sample }
             })
             console.log('{ data: temp, id: id }', { data: temp, id: prodid })
-            // io.emit('sizeUpdate', { data: temp, id: id })
+
+            // uncomment following line to update sizes in the database
+            // io.emit('sizeUpdate', { data: temp, id: prodid })
             return ({ parsedData, sizeUpdate: { data: temp, id: prodid } })
         } else {
             console.log('{ data: temp, id: id }', { data: temp, id: prodid })
-            // io.emit('sizeUpdate', { data: temp, id: id })
+            // io.emit('sizeUpdate', { data: temp, id: prodid })
             return ({ parsedData: null, sizeUpdate: {} })
         }
         //  console.log('num, count, index', num, count, index)
