@@ -291,7 +291,7 @@ item==> { type: null, length: '31"', size_elements: '["2"]' }
 
       if (result.parsedData) {
          const parsedSize = result.parsedData
-         
+
 
 
          if (parsedSize.length) {
@@ -306,8 +306,8 @@ item==> { type: null, length: '31"', size_elements: '["2"]' }
             // console.log('tempID before emitting ==>', tempID)
             // console.log('temp before emitting ==>', temp)
             // appResult.push({id:tempID, data: temp})
-console.log('{ data: temp, id: tempID }', { data: temp, id: tempID })
-// emiting stoped for size update
+            console.log('{ data: temp, id: tempID }', { data: temp, id: tempID })
+            // emiting stoped for size update
             // appIO.socket.emit('sizeUpdate', { data: temp, id: tempID })
             // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
             // await deleteGeneratedFile(stdout)
@@ -591,14 +591,14 @@ app.post('/queue/order-scrapper', async (req, res) => {
    // console.log('data', data)
    try {
 
-/**
- * Trimmed output ,order_20231227_123725.json
-Async task encountered an error: [Error: EISDIR: illegal operation on a directory, read] {
-  errno: -21,
-  code: 'EISDIR',
-  syscall: 'read'
-}
- */
+      /**
+       * Trimmed output ,order_20231227_123725.json
+      Async task encountered an error: [Error: EISDIR: illegal operation on a directory, read] {
+        errno: -21,
+        code: 'EISDIR',
+        syscall: 'read'
+      }
+       */
 
       // appIO.socket.on('orderScrapper', async function (data) {
       const momentFileName = moment().format('HHmmssSS')
