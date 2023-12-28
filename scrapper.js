@@ -81,7 +81,7 @@ const deleteGeneratedFile = async (filePaths) => {
     }
 }
 
-const readFile = async (filed, id) => {
+const readFile = async (filed, userid, prodid) => {
     const fs = require('fs').promises
     // const filed = file.trim()
     // console.log('file', filed)
@@ -96,11 +96,11 @@ const readFile = async (filed, id) => {
                 const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
                 return { ...ps, size_elements: sample }
             })
-            console.log('{ data: temp, id: id }', { data: temp, id: id })
+            console.log('{ data: temp, id: id }', { data: temp, id: prodid })
             // io.emit('sizeUpdate', { data: temp, id: id })
             return ({ parsedData, sizeUpdate: { data: temp, id: id } })
         } else {
-            console.log('{ data: temp, id: id }', { data: temp, id: id })
+            console.log('{ data: temp, id: id }', { data: temp, id: prodid })
             // io.emit('sizeUpdate', { data: temp, id: id })
             return ({ parsedData: null, sizeUpdate: {} })
         }
@@ -138,14 +138,14 @@ exports.readOrderFile = async (file, io) => {
     }
 }
 
-exports.sizeScrapper = (link, id) => {
+exports.sizeScrapper = (link, userid, prodid) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { stdout, stderr } = await runScrapper(link)
             const filed = stdout.trim()
             console.log('filed', filed)
-            const size = await readFile(filed, id)
-            // await deleteGeneratedFile(filed)
+            const size = await readFile(filed, userid, prodid)
+            await deleteGeneratedFile(filed)
             resolve(size)
         } catch (error) {
             reject(error)

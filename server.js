@@ -245,6 +245,17 @@ io.on('connection', socket => {
    // 
    appIO.socket.on('sizeScrapper', async function (data) {
       console.log('======== real data recieved =======')
+      /**
+       * {
+  link: {
+    size: [ null, '28"', '12' ],
+    id: 553,
+    quantity: '1',
+    link: 'https://shop.lululemon.com/p/womens-leggings/Align-HighRise-Crop-23-Pockets/_/prod10370068?color=29824',
+    userId: 26
+  }
+}
+       */
       console.log(data)
       console.log('======== real data recieved =======')
 
@@ -252,7 +263,25 @@ io.on('connection', socket => {
       let cartSizes = [];
       let appResult = []
       let index = 0;
-      const result = await sizeScrapper(data.link.link, data.link.userId)
+      const result = await sizeScrapper(data.link.link, data.link.userId, data.link.id)
+      /**
+       * result {
+  parsedData: [
+    { type: null, length: '25"', size_elements: [Array] },
+    { type: null, length: '28"', size_elements: [Array] },
+    { type: null, length: '31"', size_elements: [Array] }
+  ],
+  sizeUpdate: { data: [ [Object], [Object], [Object] ], id: 26 }
+}
+
+item==> {
+  type: null,
+  length: '25"',
+  size_elements: '["0","2","4","6","8","10","12","14"]'
+}
+item==> { type: null, length: '28"', size_elements: '["2"]' }
+item==> { type: null, length: '31"', size_elements: '["2"]' }
+       */
       console.log('result', result)
 
       for (let item of result.sizeUpdate.data) {
@@ -278,7 +307,8 @@ io.on('connection', socket => {
             // console.log('temp before emitting ==>', temp)
             // appResult.push({id:tempID, data: temp})
 console.log('{ data: temp, id: tempID }', { data: temp, id: tempID })
-            appIO.socket.emit('sizeUpdate', { data: temp, id: tempID })
+// emiting stoped for size update
+            // appIO.socket.emit('sizeUpdate', { data: temp, id: tempID })
             // await Size.update({ variation: returnedItem.id }).set({ meta: temp })
             // await deleteGeneratedFile(stdout)
             for (let i = 0; i < parsedSize.length; i++) {
