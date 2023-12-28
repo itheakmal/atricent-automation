@@ -96,10 +96,12 @@ const readFile = async (filed, id) => {
                 const sample = ps.size_elements ? JSON.stringify(ps.size_elements) : ps.size_elements
                 return { ...ps, size_elements: sample }
             })
-            io.emit('sizeUpdate', { data: temp, id: id })
+            console.log('{ data: temp, id: id }', { data: temp, id: id })
+            // io.emit('sizeUpdate', { data: temp, id: id })
             return ({ parsedData, sizeUpdate: { data: temp, id: id } })
         } else {
-            io.emit('sizeUpdate', { data: temp, id: id })
+            console.log('{ data: temp, id: id }', { data: temp, id: id })
+            // io.emit('sizeUpdate', { data: temp, id: id })
             return ({ parsedData: null, sizeUpdate: {} })
         }
         //  console.log('num, count, index', num, count, index)
@@ -110,22 +112,22 @@ const readFile = async (filed, id) => {
 exports.readOrderFile = async (file, io) => {
     const fs = require('fs').promises;
     // const filed = file.replace(/\r\n/g, '');
+    console.log('file', file)
+    console.log('filed', filed)
     const filed = file.trim().split(',');
 
-console.log('file', file)
-console.log('filed', filed)
     try {
         // console.log('sails.config.local', sails.config);
         const data = []
         for (let file of filed) {
 
-        const temp = await fs.readFile(`./${file}`, 'utf-8');
-        if (temp !== null) {
-            data.push(JSON.parse(temp))
-        } else {
-            data.push(temp)
+            const temp = await fs.readFile(`./${file}`, 'utf-8');
+            if (temp !== null) {
+                data.push(JSON.parse(temp))
+            } else {
+                data.push(temp)
 
-        }
+            }
         }
         // this emit is commented
         // io.emit("testOne", data);
