@@ -380,6 +380,7 @@ item==> { type: null, length: '31"', size_elements: '["2"]' }
       console.log(`emitted ============= `, { cartSizes: cartSizes, userId: data.link.userId });
       //sails.config.globals.appSocket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.id });
       appIO.socket.emit('sizeScrapperApp', { cartSizes: cartSizes, userId: data.link.userId });
+      appIO.socket.emit('sizeScrapper', { cartSizes: cartSizes, userId: data.link.userId });
       cartSizes = [];
    })
 
