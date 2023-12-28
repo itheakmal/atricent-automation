@@ -98,7 +98,7 @@ const readFile = async (filed, userid, prodid) => {
             })
             console.log('{ data: temp, id: id }', { data: temp, id: prodid })
             // io.emit('sizeUpdate', { data: temp, id: id })
-            return ({ parsedData, sizeUpdate: { data: temp, id: id } })
+            return ({ parsedData, sizeUpdate: { data: temp, id: prodid } })
         } else {
             console.log('{ data: temp, id: id }', { data: temp, id: prodid })
             // io.emit('sizeUpdate', { data: temp, id: id })
